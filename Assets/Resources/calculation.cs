@@ -12,6 +12,7 @@ namespace Resources
         public Text distanceText; // UI Text (legacy) component to display the distance
         public Text distanceText2;
         public Text distanceText3;
+        public Text angleText;
 
         void Start()
         {
@@ -37,6 +38,7 @@ namespace Resources
             if (multiTargetObject.activeInHierarchy && cylinderTargetObject.activeInHierarchy)
             {
                 CalculateAndDisplayDistance();
+                CalculateAndDisplayAngle(); // Calculate and display angle
             }
         }
 
@@ -65,5 +67,18 @@ namespace Resources
                 distanceText3.text = message3;
             }
         }
+        void CalculateAndDisplayAngle()
+        {
+            Vector3 directionA = multiTargetObject.transform.forward;
+            Vector3 directionB = cylinderTargetObject.transform.forward;
+
+            float angle = Vector3.Angle(directionA, directionB);
+
+            if (angleText != null)
+            {
+                angleText.text = $"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees";
+            }
+        }
+
     }
 }
