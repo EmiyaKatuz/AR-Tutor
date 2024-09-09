@@ -18,7 +18,7 @@ namespace Resources
         {
             if (multiTargetObject == null || cylinderTargetObject == null || cylinderTargetObject2 == null)
             {
-                Debug.LogError("Please ensure both multiTargetObject and cylinderTargetObject are assigned.");
+                Debug.LogError("Please ensure all target objects are assigned.");
             }
 
             var exposureMode = ExposureMode.EXPOSURE_MODE_CONTINUOUSAUTO;
@@ -39,6 +39,7 @@ namespace Resources
             {
                 CalculateAndDisplayDistance();
                 CalculateAndDisplayAngle(); // Calculate and display angle
+                LogWorldRotation();
             }
         }
 
@@ -67,10 +68,12 @@ namespace Resources
                 distanceText3.text = message3;
             }
         }
+
         void CalculateAndDisplayAngle()
         {
-            Vector3 directionA = multiTargetObject.transform.forward;
-            Vector3 directionB = cylinderTargetObject.transform.forward;
+            // 获取物体的正向向量作为方向向量
+            Vector3 directionA = multiTargetObject.transform.forward; // multiTargetObject的正向向量
+            Vector3 directionB = cylinderTargetObject.transform.forward; // cylinderTargetObject的正向向量
 
             float angle = Vector3.Angle(directionA, directionB);
 
@@ -78,7 +81,19 @@ namespace Resources
             {
                 angleText.text = $"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees";
             }
+
+            // Debug.Log($"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees");
         }
 
+        void LogWorldRotation()
+        {
+            // 获取物体的欧拉角表示的世界旋转角度
+            // Vector3 rotationA = multiTargetObject.transform.eulerAngles; // multiTargetObject的欧拉角
+            // Vector3 rotationB = cylinderTargetObject.transform.eulerAngles; // cylinderTargetObject的欧拉角
+
+            // 在控制台中输出每个物体的旋转角度
+            // Debug.Log($"{multiTargetObject.name} World Rotation - X: {rotationA.x:F2}°, Y: {rotationA.y:F2}°, Z: {rotationA.z:F2}°");
+            // Debug.Log($"{cylinderTargetObject.name} World Rotation - X: {rotationB.x:F2}°, Y: {rotationB.y:F2}°, Z: {rotationB.z:F2}°");
+        }
     }
 }
