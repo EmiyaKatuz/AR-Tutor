@@ -1,40 +1,60 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Vuforia;
 
-namespace Resources
-{
-    public class DistanceCalculator : MonoBehaviour
-    {
-        public GameObject multiTargetObject; // The 3D Object attached to the multiTarget
-        public GameObject cylinderTargetObject; // The 3D Object attached to the cylinderTarget
+namespace Resources {
+    public class DistanceCalculator : MonoBehaviour {
+        public GameObject multiTargetObject;
+        public GameObject cylinderTargetObject;
         public GameObject cylinderTargetObject2;
-        public Text distanceText; // UI Text (legacy) component to display the distance
+        public Text distanceText;
         public Text distanceText2;
         public Text distanceText3;
         public Text angleText;
+        public Button rightButton;
+        public Button leftButton;
+        public Text promptTextTitle;
+        public Text promptTextFigure;
+        public int page = 0;
 
-        void Start()
-        {
-            if (multiTargetObject == null || cylinderTargetObject == null || cylinderTargetObject2 == null)
-            {
-                Debug.LogError("Please ensure both multiTargetObject and cylinderTargetObject are assigned.");
-            }
-
-            //VuforiaBehaviour.Instance.CameraDevice.SetExposureMode(ExposureMode.EXPOSURE_MODE_CONTINUOUSAUTO);
+        public void rightClicked() {
+            promptTextTitle.text = "Angle between objects: (degrees)";
+            page += 1;
         }
 
-        void Update()
-        {
-            if (multiTargetObject.activeInHierarchy && cylinderTargetObject.activeInHierarchy)
-            {
-                CalculateAndDisplayDistance();
-                CalculateAndDisplayAngle(); // Calculate and display angle
+        public void leftClicked() {
+            promptTextTitle.text = "Distance between objects: (cm)";
+            page -= 1;
+        }
+
+        void Start() {
+            rightButton.onClick.AddListener(rightClicked);
+            leftButton.onClick.AddListener(leftClicked);
+
+            promptTextTitle.text = "Distance between objects: (cm)";
+
+            if (multiTargetObject == null || cylinderTargetObject == null || cylinderTargetObject2 == null) {
+                Debug.LogError("Please ensure all target objects are assigned.");
             }
         }
 
-        void CalculateAndDisplayDistance()
-        {
+        void Update() {
+            if (multiTargetObject.activeInHierarchy && cylinderTargetObject.activeInHierarchy) {
+                // CalculateAndDisplayDistance();
+                // CalculateAndDisplayAngle();
+                // LogWorldRotation();
+
+                if (page == 1) {
+                    promptTextFigure.text = CalculateAndDisplayAngle();
+                }
+                else if (page == 0) {
+                    promptTextFigure.text = CalculateAndDisplayDistance();
+                }
+            }
+        }
+
+        string CalculateAndDisplayDistance() {
             Vector3 positionA = multiTargetObject.transform.position;
             Vector3 positionB = cylinderTargetObject.transform.position;
             Vector3 positionC = cylinderTargetObject2.transform.position;
@@ -50,27 +70,37 @@ namespace Resources
             string message3 =
                 $"Distance between {multiTargetObject.name} and {cylinderTargetObject2.name}: {distance3} cm";
 
-            // Display the distance on the UI Text (legacy) component
-            if (distanceText && distanceText2 && distanceText3 != null)
-            {
+            if (distanceText && distanceText2 && distanceText3 != null) {
                 distanceText.text = message;
                 distanceText2.text = message2;
                 distanceText3.text = message3;
             }
+
+            return distance.ToString();
         }
 
-        void CalculateAndDisplayAngle()
-        {
+        string CalculateAndDisplayAngle() {
             Vector3 directionA = multiTargetObject.transform.forward;
             Vector3 directionB = cylinderTargetObject.transform.forward;
-
             float angle = Vector3.Angle(directionA, directionB);
 
-            if (angleText != null)
-            {
+            if (angleText != null) {
                 angleText.text =
                     $"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees";
             }
+
+            return angle.ToString();
+            // Debug.Log($"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees");
+        }
+
+        void LogWorldRotation() {
+            // 获取物体的欧拉角表示的世界旋转角度
+            // Vector3 rotationA = multiTargetObject.transform.eulerAngles; // multiTargetObject的欧拉角
+            // Vector3 rotationB = cylinderTargetObject.transform.eulerAngles; // cylinderTargetObject的欧拉角
+
+            // 在控制台中输出每个物体的旋转角度
+            // Debug.Log($"{multiTargetObject.name} World Rotation - X: {rotationA.x:F2}°, Y: {rotationA.y:F2}°, Z: {rotationA.z:F2}°");
+            // Debug.Log($"{cylinderTargetObject.name} World Rotation - X: {rotationB.x:F2}°, Y: {rotationB.y:F2}°, Z: {rotationB.z:F2}°");
         }
     }
 }
