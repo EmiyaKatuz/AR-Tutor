@@ -22,6 +22,7 @@ namespace Resources {
             promptTextTitle.text = "Angle between objects: (degrees)";
             page += 1;
         }
+
         public void leftClicked() {
             promptTextTitle.text = "Distance between objects: (cm)";
             page -= 1;
@@ -37,14 +38,7 @@ namespace Resources {
                 Debug.LogError("Please ensure all target objects are assigned.");
             }
 
-            var exposureMode = ExposureMode.EXPOSURE_MODE_CONTINUOUSAUTO;
-            if (VuforiaBehaviour.Instance.CameraDevice.IsExposureModeSupported(exposureMode)) {
-                Debug.Log("Yes");
-                VuforiaBehaviour.Instance.CameraDevice.SetExposureMode(ExposureMode.EXPOSURE_MODE_CONTINUOUSAUTO);
-            }
-            else {
-                Debug.Log("No");
-            }
+            // VuforiaBehaviour.Instance.CameraDevice.SetExposureMode(ExposureMode.EXPOSURE_MODE_CONTINUOUSAUTO);
         }
 
         void Update() {
@@ -83,6 +77,7 @@ namespace Resources {
                 distanceText2.text = message2;
                 distanceText3.text = message3;
             }
+
             return distance.ToString();
         }
 
@@ -95,6 +90,7 @@ namespace Resources {
                 angleText.text =
                     $"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees";
             }
+
             return angle.ToString();
             // Debug.Log($"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees");
         }
