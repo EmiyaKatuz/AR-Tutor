@@ -37,8 +37,6 @@ namespace Resources {
             if (multiTargetObject == null || cylinderTargetObject == null || cylinderTargetObject2 == null) {
                 Debug.LogError("Please ensure all target objects are assigned.");
             }
-
-            // VuforiaBehaviour.Instance.CameraDevice.SetExposureMode(ExposureMode.EXPOSURE_MODE_CONTINUOUSAUTO);
         }
 
         void Update() {
