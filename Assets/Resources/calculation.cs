@@ -21,16 +21,7 @@ namespace Resources
                 Debug.LogError("Please ensure both multiTargetObject and cylinderTargetObject are assigned.");
             }
 
-            var exposureMode = ExposureMode.EXPOSURE_MODE_CONTINUOUSAUTO;
-            if (VuforiaBehaviour.Instance.CameraDevice.IsExposureModeSupported(exposureMode))
-            {
-                Debug.Log("Yes");
-                VuforiaBehaviour.Instance.CameraDevice.SetExposureMode(ExposureMode.EXPOSURE_MODE_CONTINUOUSAUTO);
-            }
-            else
-            {
-                Debug.Log("No");
-            }
+            //VuforiaBehaviour.Instance.CameraDevice.SetExposureMode(ExposureMode.EXPOSURE_MODE_CONTINUOUSAUTO);
         }
 
         void Update()
@@ -67,6 +58,7 @@ namespace Resources
                 distanceText3.text = message3;
             }
         }
+
         void CalculateAndDisplayAngle()
         {
             Vector3 directionA = multiTargetObject.transform.forward;
@@ -76,9 +68,9 @@ namespace Resources
 
             if (angleText != null)
             {
-                angleText.text = $"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees";
+                angleText.text =
+                    $"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees";
             }
         }
-
     }
 }
