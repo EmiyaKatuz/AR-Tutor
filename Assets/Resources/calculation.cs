@@ -1,104 +1,124 @@
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 using Vuforia;
 
-namespace Resources {
-    public class DistanceCalculator : MonoBehaviour {
+namespace Resources
+{
+    public class DistanceCalculator : MonoBehaviour
+    {
         public GameObject multiTargetObject;
+
         public GameObject cylinderTargetObject;
-        public GameObject cylinderTargetObject2;
-        public Text distanceText;
-        public Text distanceText2;
-        public Text distanceText3;
-        public Text angleText;
+
+        //public GameObject cylinderTargetObject2;
+        //public Text distanceText;
+        //public Text distanceText2;
+        //public Text distanceText3;
+        //public Text angleText;
         public Button rightButton;
         public Button leftButton;
         public Text promptTextTitle;
         public Text promptTextFigure;
-        public int page = 0;
+        public int page;
 
-        public void rightClicked() {
+        private void RightClicked()
+        {
             promptTextTitle.text = "Angle between objects: (degrees)";
             page += 1;
         }
 
-        public void leftClicked() {
+        private void LeftClicked()
+        {
             promptTextTitle.text = "Distance between objects: (cm)";
             page -= 1;
         }
 
-        void Start() {
-            rightButton.onClick.AddListener(rightClicked);
-            leftButton.onClick.AddListener(leftClicked);
+        void Start()
+        {
+            rightButton.onClick.AddListener(RightClicked);
+            leftButton.onClick.AddListener(LeftClicked);
 
             promptTextTitle.text = "Distance between objects: (cm)";
 
-            if (multiTargetObject == null || cylinderTargetObject == null || cylinderTargetObject2 == null) {
+            if (multiTargetObject == null || cylinderTargetObject == null)
+            {
                 Debug.LogError("Please ensure all target objects are assigned.");
             }
         }
 
-        void Update() {
-            if (multiTargetObject.activeInHierarchy && cylinderTargetObject.activeInHierarchy) {
+        void Update()
+        {
+            if (multiTargetObject.activeInHierarchy && cylinderTargetObject.activeInHierarchy)
+            {
                 // CalculateAndDisplayDistance();
                 // CalculateAndDisplayAngle();
                 // LogWorldRotation();
 
-                if (page == 1) {
+                if (page == 1)
+                {
                     promptTextFigure.text = CalculateAndDisplayAngle();
                 }
-                else if (page == 0) {
+                else if (page == 0)
+                {
                     promptTextFigure.text = CalculateAndDisplayDistance();
                 }
             }
         }
 
-        string CalculateAndDisplayDistance() {
+        string CalculateAndDisplayDistance()
+        {
             Vector3 positionA = multiTargetObject.transform.position;
             Vector3 positionB = cylinderTargetObject.transform.position;
-            Vector3 positionC = cylinderTargetObject2.transform.position;
+            //Vector3 positionC = cylinderTargetObject2.transform.position;
 
             float distance = Vector3.Distance(positionA, positionB);
-            float distance2 = Vector3.Distance(positionB, positionC);
-            float distance3 = Vector3.Distance(positionA, positionC);
+            //float distance2 = Vector3.Distance(positionB, positionC);
+            //float distance3 = Vector3.Distance(positionA, positionC);
 
-            string message =
+            /*string message =
                 $"Distance between {multiTargetObject.name} and {cylinderTargetObject.name}: {distance} cm";
             string message2 =
                 $"Distance between {cylinderTargetObject.name} and {cylinderTargetObject2.name}: {distance2} cm";
             string message3 =
                 $"Distance between {multiTargetObject.name} and {cylinderTargetObject2.name}: {distance3} cm";
 
-            if (distanceText && distanceText2 && distanceText3 != null) {
+            if (distanceText != null)
+            {
                 distanceText.text = message;
-                distanceText2.text = message2;
-                distanceText3.text = message3;
+                //distanceText2.text = message2;
+                //distanceText3.text = message3;
             }
+            */
 
-            return distance.ToString();
+            return distance.ToString(CultureInfo.InvariantCulture);
         }
 
-        string CalculateAndDisplayAngle() {
+        string CalculateAndDisplayAngle()
+        {
             Vector3 directionA = multiTargetObject.transform.forward;
-            Vector3 directionB = cylinderTargetObject.transform.forward;
+            Vector3 directionB = cylinderTargetObject.transform.up;
             float angle = Vector3.Angle(directionA, directionB);
 
-            if (angleText != null) {
+            /*if (angleText != null)
+            {
                 angleText.text =
                     $"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees";
             }
+            */
 
-            return angle.ToString();
+            return angle.ToString(CultureInfo.InvariantCulture);
             // Debug.Log($"Angle between {multiTargetObject.name} and {cylinderTargetObject.name}: {angle:F2} degrees");
         }
 
-        void LogWorldRotation() {
-            // 获取物体的欧拉角表示的世界旋转角度
+        void LogWorldRotation()
+        {
+            // Get the world rotation angle represented by the Euler angle of the object
             // Vector3 rotationA = multiTargetObject.transform.eulerAngles; // multiTargetObject的欧拉角
             // Vector3 rotationB = cylinderTargetObject.transform.eulerAngles; // cylinderTargetObject的欧拉角
 
-            // 在控制台中输出每个物体的旋转角度
+            // Output the rotation angle of each object in the console
             // Debug.Log($"{multiTargetObject.name} World Rotation - X: {rotationA.x:F2}°, Y: {rotationA.y:F2}°, Z: {rotationA.z:F2}°");
             // Debug.Log($"{cylinderTargetObject.name} World Rotation - X: {rotationB.x:F2}°, Y: {rotationB.y:F2}°, Z: {rotationB.z:F2}°");
         }

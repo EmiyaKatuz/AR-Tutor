@@ -1,17 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ButtonController : MonoBehaviour
+namespace Resources
 {
-    public Button rightButton;
-
-    void Start()
+    public class ButtonController : MonoBehaviour
     {
-        rightButton.onClick.AddListener(OnButtonClick);
-    }
+        public Button rightButton;
 
-    void OnButtonClick()
-    {
-        Debug.Log("Button clicked!");
+        private void Start()
+        {
+            rightButton.onClick.AddListener(OnButtonClick);
+        }
+
+        private static void OnButtonClick()
+        {
+            Debug.Log("Button clicked!");
+        }
     }
 }

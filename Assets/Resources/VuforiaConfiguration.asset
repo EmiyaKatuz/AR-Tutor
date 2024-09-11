@@ -22,7 +22,7 @@ MonoBehaviour:
     virtualSceneScaleFactor: 1
     modelTargetRecoWhileExtendedTracked: 1
     shareRecordingsInITunes: 0
-    logLevel: 0
+    logLevel: 2
     version: 10.25.4
     eulaAcceptedVersions: '{"Values":["","0.0","10.25"]}'
   database:
