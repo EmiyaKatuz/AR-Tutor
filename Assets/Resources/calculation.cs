@@ -50,49 +50,60 @@ namespace Resources
 
         void Update()
         {
-            if (multiTargetObject.activeInHierarchy && cylinderTargetObject.activeInHierarchy)
-            {
-                // CalculateAndDisplayDistance();
-                // CalculateAndDisplayAngle();
-                // LogWorldRotation();
+            try {
+                if (multiTargetObject.activeInHierarchy && cylinderTargetObject.activeInHierarchy)
+                {
+                    // CalculateAndDisplayDistance();
+                    // CalculateAndDisplayAngle();
+                    // LogWorldRotation();
 
-                if (page == 1)
-                {
-                    promptTextFigure.text = CalculateAndDisplayAngle();
-                }
-                else if (page == 0)
-                {
-                    promptTextFigure.text = CalculateAndDisplayDistance();
+                    if (page == 1)
+                    {
+                        promptTextFigure.text = CalculateAndDisplayAngle();
+                    }
+                    else if (page == 0)
+                    {
+                        promptTextFigure.text = CalculateAndDisplayDistance();
+                    }
                 }
             }
+            catch {
+
+            }
+
         }
 
-        string CalculateAndDisplayDistance()
-        {
-            Vector3 positionA = multiTargetObject.transform.position;
-            Vector3 positionB = cylinderTargetObject.transform.position;
-            //Vector3 positionC = cylinderTargetObject2.transform.position;
+        string CalculateAndDisplayDistance() {
+            try {
+                Vector3 positionA = multiTargetObject.transform.position;
+                Vector3 positionB = cylinderTargetObject.transform.position;
+                //Vector3 positionC = cylinderTargetObject2.transform.position;
 
-            float distance = Vector3.Distance(positionA, positionB);
-            //float distance2 = Vector3.Distance(positionB, positionC);
-            //float distance3 = Vector3.Distance(positionA, positionC);
+                float distance = Vector3.Distance(positionA, positionB);
+                //float distance2 = Vector3.Distance(positionB, positionC);
+                //float distance3 = Vector3.Distance(positionA, positionC);
 
-            /*string message =
-                $"Distance between {multiTargetObject.name} and {cylinderTargetObject.name}: {distance} cm";
-            string message2 =
-                $"Distance between {cylinderTargetObject.name} and {cylinderTargetObject2.name}: {distance2} cm";
-            string message3 =
-                $"Distance between {multiTargetObject.name} and {cylinderTargetObject2.name}: {distance3} cm";
+                /*string message =
+                    $"Distance between {multiTargetObject.name} and {cylinderTargetObject.name}: {distance} cm";
+                string message2 =
+                    $"Distance between {cylinderTargetObject.name} and {cylinderTargetObject2.name}: {distance2} cm";
+                string message3 =
+                    $"Distance between {multiTargetObject.name} and {cylinderTargetObject2.name}: {distance3} cm";
 
-            if (distanceText != null)
-            {
-                distanceText.text = message;
-                //distanceText2.text = message2;
-                //distanceText3.text = message3;
+                if (distanceText != null)
+                {
+                    distanceText.text = message;
+                    //distanceText2.text = message2;
+                    //distanceText3.text = message3;
+                }
+                */
+
+                return distance.ToString(CultureInfo.InvariantCulture);
+
             }
-            */
-
-            return distance.ToString(CultureInfo.InvariantCulture);
+            catch {
+                return "err";
+            }
         }
 
         string CalculateAndDisplayAngle()
