@@ -39,6 +39,7 @@ public class ResultBehaviour : MonoBehaviour
                 blueArrow.transform.localPosition = Vector3.zero;
                 transform.localPosition = Vector3.zero;
                 greenVector = Vector3.Cross(blueVector, redVector);
+                text = "" + Vector3.Magnitude(greenVector);
                 break;
             case 2:
                 redArrow.transform.localPosition = Vector3.zero;
