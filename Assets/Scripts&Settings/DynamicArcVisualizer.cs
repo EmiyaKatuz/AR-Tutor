@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DynamicArcVisualizer : MonoBehaviour
@@ -7,6 +5,7 @@ public class DynamicArcVisualizer : MonoBehaviour
     public int segments = 50;
     public float radius = 5.0f;
     public float width = 1.00f;
+    public Material arcMaterial;
 
     private LineRenderer lineRenderer;
 
@@ -21,7 +20,7 @@ public class DynamicArcVisualizer : MonoBehaviour
         lineRenderer.startWidth = width;
         lineRenderer.endWidth = width;
         lineRenderer.useWorldSpace = true;
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer.material = arcMaterial;
         lineRenderer.positionCount = segments + 1;
     }
 
