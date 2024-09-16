@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<VuforiaUnityInfo version="7.0">
-    <TargetSet version="5.0" toolVersion="2.8.1">
-        <CylinderTarget name="film" version="3.0" targetId="94a4e3237c444258a49c602ba4d54bc1" sideLength="10.000000" topDiameter="7.321340" bottomDiameter="7.321340" sideImage="film.Body_scaled.jpg"/>
-    </TargetSet>
-</VuforiaUnityInfo>
