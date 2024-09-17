@@ -14,7 +14,8 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField]
     GameObject normalArrow = null;
     [SerializeField]
-    int mode = 0;
+    GameObject parallelogram = null;
+    public int mode = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,10 +25,9 @@ public class ResultBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 redVector = redArrow.transform.forward * redArrow.transform.localScale.z;
-        Vector3 blueVector = blueArrow.transform.forward * blueArrow.transform.localScale.z;
-        Vector3 greenVector = transform.forward * transform.localScale.z;
-        float magnitude = Vector3.Magnitude(greenVector);
+        Vector3 redVector = redArrow.transform.forward;
+        Vector3 blueVector = blueArrow.transform.forward;
+        Vector3 greenVector = transform.forward;
         string text = textObject.text;
         switch (mode)
         {
@@ -35,38 +35,46 @@ public class ResultBehaviour : MonoBehaviour
                 redArrow.transform.localPosition = Vector3.zero;
                 blueArrow.transform.localPosition = Vector3.zero;
                 transform.localPosition = Vector3.zero;
+                parallelogram.SetActive(false);
                 text = "" + Vector3.Dot(redVector, blueVector);
                 break;
-            case 1: // Cross Product
+            case 1: // Cross Product + Parallelogram
                 redArrow.transform.localPosition = Vector3.zero;
                 blueArrow.transform.localPosition = Vector3.zero;
                 transform.localPosition = Vector3.zero;
+                parallelogram.SetActive(true);
                 greenVector = Vector3.Cross(blueVector, redVector);
-                magnitude = Vector3.Magnitude(greenVector);
-                text = "" + magnitude;
+                text = "" + Vector3.Magnitude(greenVector);
                 break;
             case 2: // Vector Addition
                 redArrow.transform.localPosition = Vector3.zero;
                 blueArrow.transform.localPosition = redArrow.transform.forward * 14;
                 transform.localPosition = Vector3.zero;
+                parallelogram.SetActive(false);
                 greenVector = redVector + blueVector;
                 break;
             case 3: // Vector Subtraction
                 redArrow.transform.localPosition = Vector3.zero;
                 blueArrow.transform.localPosition = Vector3.zero;
                 transform.localPosition = blueArrow.transform.forward * 14;
+                parallelogram.SetActive(false);
                 greenVector = redVector - blueVector;
                 break;
             case 4: // Projection
                 redArrow.transform.localPosition = Vector3.zero;
                 blueArrow.transform.localPosition = Vector3.zero;
                 greenVector = Vector3.Project(redVector, blueVector);
+                parallelogram.SetActive(false);
                 break;
 
         }
         textObject.text = text;
+
         transform.forward = greenVector;
-        transform.localScale = new Vector3(1, 1, magnitude);
+        Vector3 magnitude = transform.localScale;
+        magnitude.z = Vector3.Magnitude(greenVector);
+        transform.localScale = magnitude;
+
         normalArrow.transform.forward = Vector3.Cross(blueVector, redVector);
         normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
     }

@@ -9,9 +9,9 @@ public class VectorBehaviour : MonoBehaviour
     int color = 0;
 
     KeyCode[][] keys = { 
-        new KeyCode[]{ KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.C, KeyCode.V },
-        new KeyCode[]{ KeyCode.I, KeyCode.K, KeyCode.J, KeyCode.L, KeyCode.M, KeyCode.N },
-        new KeyCode[]{ KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.Space, KeyCode.Slash } 
+        new KeyCode[]{ KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D },
+        new KeyCode[]{ KeyCode.I, KeyCode.K, KeyCode.J, KeyCode.L },
+        new KeyCode[]{ KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.LeftArrow, KeyCode.RightArrow } 
     };
 
     // Start is called before the first frame update
@@ -38,14 +38,6 @@ public class VectorBehaviour : MonoBehaviour
         if (Input.GetKey(keys[color][3]))
         {
             transform.Rotate(-1, 0, 0);
-        }
-        if (Input.GetKey(keys[color][4]))
-        {
-            transform.localScale += new Vector3(0, 0, 0.01f);
-        }
-        if (Input.GetKey(keys[color][5]))
-        {
-            transform.localScale += new Vector3(0, 0, -0.01f);
         }
     }
 }
