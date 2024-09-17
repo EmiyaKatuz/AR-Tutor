@@ -22,9 +22,10 @@ public class ResultBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 redVector = redArrow.transform.forward;
-        Vector3 blueVector = blueArrow.transform.forward;
-        Vector3 greenVector = transform.forward;
+        Vector3 redVector = redArrow.transform.forward * redArrow.transform.localScale.z;
+        Vector3 blueVector = blueArrow.transform.forward * blueArrow.transform.localScale.z;
+        Vector3 greenVector = transform.forward * transform.localScale.z;
+        float magnitude = Vector3.Magnitude(greenVector);
         string text = textObject.text;
         switch (mode)
         {
@@ -39,7 +40,8 @@ public class ResultBehaviour : MonoBehaviour
                 blueArrow.transform.localPosition = Vector3.zero;
                 transform.localPosition = Vector3.zero;
                 greenVector = Vector3.Cross(blueVector, redVector);
-                text = "" + Vector3.Magnitude(greenVector);
+                magnitude = Vector3.Magnitude(greenVector);
+                text = "" + magnitude;
                 break;
             case 2: // Vector Addition
                 redArrow.transform.localPosition = Vector3.zero;
@@ -62,8 +64,6 @@ public class ResultBehaviour : MonoBehaviour
         }
         textObject.text = text;
         transform.forward = greenVector;
-        Vector3 magnitude = transform.localScale;
-        magnitude.z = Vector3.Magnitude(greenVector);
-        transform.localScale = magnitude;
+        transform.localScale = new Vector3(1, 1, magnitude);
     }
 }

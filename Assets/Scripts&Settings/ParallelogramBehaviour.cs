@@ -21,11 +21,11 @@ public class ParallelogramBehaviour : MonoBehaviour
         Vector3[] vertices = new Vector3[4]
         {
             Vector3.zero,
-            redArrow.transform.position + redArrow.transform.forward,
-            redArrow.transform.position + redArrow.transform.forward 
-            + blueArrow.transform.position + blueArrow.transform.forward,
-            blueArrow.transform.position + blueArrow.transform.forward
-            
+            redArrow.transform.position + redArrow.transform.forward * redArrow.transform.localScale.z,
+            redArrow.transform.position + redArrow.transform.forward * redArrow.transform.localScale.z
+            + blueArrow.transform.position + blueArrow.transform.forward * blueArrow.transform.localScale.z,
+            blueArrow.transform.position + blueArrow.transform.forward * blueArrow.transform.localScale.z
+
         };
         for(int i = 0; i < vertices.Length; i++)
         {

@@ -41,11 +41,11 @@ public class VectorBehaviour : MonoBehaviour
         }
         if (Input.GetKey(keys[color][4]))
         {
-            transform.Translate(0, 0, 0.1f);
+            transform.localScale += new Vector3(0, 0, 0.01f);
         }
         if (Input.GetKey(keys[color][5]))
         {
-            transform.Translate(0, 0, -0.1f);
+            transform.localScale += new Vector3(0, 0, -0.01f);
         }
     }
 }
