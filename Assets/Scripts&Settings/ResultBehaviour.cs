@@ -12,6 +12,8 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField]
     GameObject blueArrow = null;
     [SerializeField]
+    GameObject normalArrow = null;
+    [SerializeField]
     int mode = 0;
     // Start is called before the first frame update
     void Start()
@@ -65,5 +67,7 @@ public class ResultBehaviour : MonoBehaviour
         textObject.text = text;
         transform.forward = greenVector;
         transform.localScale = new Vector3(1, 1, magnitude);
+        normalArrow.transform.forward = Vector3.Cross(blueVector, redVector);
+        normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
     }
 }
