@@ -28,32 +28,37 @@ public class ResultBehaviour : MonoBehaviour
         string text = textObject.text;
         switch (mode)
         {
-            case 0:
+            case 0: // Dot Product
                 redArrow.transform.localPosition = Vector3.zero;
                 blueArrow.transform.localPosition = Vector3.zero;
                 transform.localPosition = Vector3.zero;
                 text = "" + Vector3.Dot(redVector, blueVector);
                 break;
-            case 1:
+            case 1: // Cross Product
                 redArrow.transform.localPosition = Vector3.zero;
                 blueArrow.transform.localPosition = Vector3.zero;
                 transform.localPosition = Vector3.zero;
                 greenVector = Vector3.Cross(blueVector, redVector);
                 text = "" + Vector3.Magnitude(greenVector);
                 break;
-            case 2:
+            case 2: // Vector Addition
                 redArrow.transform.localPosition = Vector3.zero;
                 blueArrow.transform.localPosition = redArrow.transform.forward * 14;
                 transform.localPosition = Vector3.zero;
                 greenVector = redVector + blueVector;
                 break;
-            case 3:
+            case 3: // Vector Subtraction
                 redArrow.transform.localPosition = Vector3.zero;
                 blueArrow.transform.localPosition = Vector3.zero;
                 transform.localPosition = blueArrow.transform.forward * 14;
                 greenVector = redVector - blueVector;
                 break;
-            
+            case 4: // Projection
+                redArrow.transform.localPosition = Vector3.zero;
+                blueArrow.transform.localPosition = Vector3.zero;
+                greenVector = Vector3.Project(redVector, blueVector);
+                break;
+
         }
         textObject.text = text;
         transform.forward = greenVector;
