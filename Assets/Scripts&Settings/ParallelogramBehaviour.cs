@@ -5,9 +5,9 @@ using UnityEngine;
 public class ParallelogramBehaviour : MonoBehaviour
 {
     [SerializeField]
-    GameObject redArrow = null;
+    GameObject redArrow;
     [SerializeField]
-    GameObject blueArrow = null;
+    GameObject blueArrow;
 
     // Start is called before the first frame update
     void Start()
