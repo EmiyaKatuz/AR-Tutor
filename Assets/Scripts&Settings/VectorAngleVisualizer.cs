@@ -7,7 +7,7 @@ public class VectorAngleVisualizer : MonoBehaviour
     public GameObject vectorObject2;
     public GameObject arcVisualizerPrefab;
     public Text angleText; // Text UI for displaying angle information
-    private GameObject arcInstance;
+    private GameObject _arcInstance;
 
     void Start()
     {
@@ -36,7 +36,7 @@ public class VectorAngleVisualizer : MonoBehaviour
 
     Vector3 GetVectorFromGameObject(GameObject obj)
     {
-        if (obj == null)
+        if (!obj)
         {
             Debug.LogError("GameObject is empty.");
             return Vector3.zero;
@@ -54,7 +54,7 @@ public class VectorAngleVisualizer : MonoBehaviour
         return vector;
     }
 
-    float GetModelLength(GameObject obj)
+    private static float GetModelLength(GameObject obj)
     {
         // Initialize merged bounding boxes
         Bounds combinedBounds = new Bounds(obj.transform.position, Vector3.zero);
@@ -81,23 +81,23 @@ public class VectorAngleVisualizer : MonoBehaviour
 
     void VisualizeAngle(Vector3 vector1, Vector3 vector2, Vector3 startPosition, float angle)
     {
-        if (arcVisualizerPrefab != null)
+        if (arcVisualizerPrefab)
         {
             // If there is already an instance, destroy it first
-            if (arcInstance != null)
+            if (_arcInstance)
             {
-                Destroy(arcInstance);
+                Destroy(_arcInstance);
             }
 
             // Instantiate Arc Prefab
-            arcInstance = Instantiate(arcVisualizerPrefab, startPosition, Quaternion.identity);
+            _arcInstance = Instantiate(arcVisualizerPrefab, startPosition, Quaternion.identity);
 
             // Get the arc's script and update the arc's shape and direction
-            DynamicArcVisualizer arcVisualizer = arcInstance.GetComponent<DynamicArcVisualizer>();
-            if (arcVisualizer != null)
+            DynamicArcVisualizer arcVisualizer = _arcInstance.GetComponent<DynamicArcVisualizer>();
+            if (arcVisualizer)
             {
                 // Set the radius of the arc (can be adjusted as needed)
-                arcVisualizer.SetRadius(1.0f);
+                arcVisualizer.SetRadius(2.0f);
 
                 // Update arc shape and direction
                 arcVisualizer.UpdateArc(vector1, vector2, startPosition, angle);
@@ -116,7 +116,7 @@ public class VectorAngleVisualizer : MonoBehaviour
     // Update the Text on the screen to display the angle information
     void UpdateAngleText(float angle)
     {
-        if (angleText != null)
+        if (angleText)
         {
             angleText.text = "Angle: " + angle.ToString("F2") + "°";
         }
