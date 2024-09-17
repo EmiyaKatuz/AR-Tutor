@@ -13,18 +13,27 @@ MonoBehaviour:
   m_Name: VuforiaConfiguration
   m_EditorClassIdentifier: 
   vuforia:
+<<<<<<< HEAD
     vuforiaLicenseKey: AVdbX4r/////AAABmXAvEuBr+k17snnEL2EWgo14Tdhm0BysY8sir9yN2RW6TcDFP/2p7EblMbE60+Qsid+YIwTXj8zq+tur9wx9sWmeOiIScdZ6d5ywwLz2al+h549O8qTWGekIw3oSRrtITm3NtEOSCOFoS35DnkG2f4saah48lTrdzEqqXqiPpttAccyOPrIDwa5FkE9LGS6pR7e6DPZNSn/w1afp4XPQHBaYS5VuJ8X7RdiGWJKL/eNhYjMLe5MCPptEMDOrrKvlTyZjPjY3J0BCHhBTpFwUXKwf/nVlgfuzrwb97mKPw5w/XNAdFqlknaKT113rcpD1PMzDRfT0HwdlHNPnYYBtl4kBRIZVY/YiPrl+07FbGjfX
     ufoLicenseKey: QVRiRGNYei8vLy8vQUFBQUtBNlZhNi9zbWtGanVMcXhDYmg2TmoxMEJYbnBXTDcvcWJGRk1HOGh4dVFjc0pudWZoSEI3UDl3SU9BeFRCTnNCdzhxMEkrdk9JdzFaVTlKWGdYSjJ0YXkwS1BUMyt5WGY5S2QrT3NqbnZRUldjL283a0xZZHU0VzY0VTlxRE1NbGJBQjIvdzZ3Y0JFVnVKRW5QYWVGc3B5K2NBQVlha2NPYUFqeEpsb1NVdkpTN1pUYjhTbXZCa2JKTEljNTg4QjQyOUYxcUU3TmJ0b0hQWVgxT2JVN1V4RWNQVmJKYnE2QmYzRVFmZWc1Z0hKUzlhRmlncWdueTlGQ3dXN1p4ZzJrdm5nV1VHV2ZqNVBnNGp1TFdDMHhRZDV2L1BCK0FmRExZS3JzdU5ydXd5UFZIbXF4emgxeG5Dc1NORk94Sm1rZmFDeXE4TGNCekhKanlvL2NadVlxd2R2VFhENUZyc1RCTmFOSlF1eUpya3U=
+=======
+    vuforiaLicenseKey: 
+    ufoLicenseKey: QVRFQ2FSai8vLy8vQUFBQUtId2N5MmFyeTAwWWdSOVhVRk9ROFNzVFoxdVNyS0hzWFc0Vk9vcWo1NkR2bEYyVUZNZlpFaXpVbjVCYVJIMFNUUWZWWGVCNFVFQ2gzZjF4Y3Q1WFlwNVI1S1d1TWNWK05WZUF6UFRqYm9kWW1ibnd4VWRzVFlrZVpmOWFXYVZ0aTl0NU5QWWxwWFljYkhVYUhMYXRQcWJ1RnpRQWluUmh0TDZWT0x3TktXdnJTQ1p6UWxuSU1tZ08xbnhORnlodjJoRzd6U2hXU1ZGZU5IeEVrSFV1Uis0eFJVOXZZN2E0TFVFN1h6VW9RWWM4M1NBdi80Ni9ITE9pZmVvalk0a0l1NWZlZDU2eTNoaHJvQzZBanNGUmkxVTBCRjgvcm52WkhFbk5ZSmw5WjY3a3p2Ui9vNGl6bmw2MmZrZjhVUXBINnVvbyt6eGJZT3N6QktoZEM3b0NWUERHNnlSNndXdUo0RmRWWHlGU0JGMmI=
+>>>>>>> test
     delayedInitialization: 0
     cameraFocusModeSetting: 2
     cameraDeviceModeSetting: -1
-    maxSimultaneousImageTargets: 3
+    maxSimultaneousImageTargets: 1
     virtualSceneScaleFactor: 1
     modelTargetRecoWhileExtendedTracked: 1
     shareRecordingsInITunes: 0
     logLevel: 0
     version: 10.25.4
+<<<<<<< HEAD
     eulaAcceptedVersions: '{"Values":["10.25","0.0"]}'
+=======
+    eulaAcceptedVersions: '{"Values":["0.0","10.25"]}'
+>>>>>>> test
   database:
     disableModelExtraction: 0
   shaders:
