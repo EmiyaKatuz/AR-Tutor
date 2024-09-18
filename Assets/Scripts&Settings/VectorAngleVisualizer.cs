@@ -1,25 +1,21 @@
 using UnityEngine.UI;
 using UnityEngine;
 
-public class VectorAngleVisualizer : MonoBehaviour
-{
+public class VectorAngleVisualizer : MonoBehaviour {
     public GameObject vectorObject1;
     public GameObject vectorObject2;
     public GameObject arcVisualizerPrefab;
     public Text angleText; // Text UI for displaying angle information
     private GameObject _arcInstance;
 
-    void Start()
-    {
+    void Start() {
         // Make sure arcVisualizerPrefab is set
-        if (arcVisualizerPrefab == null)
-        {
+        if (arcVisualizerPrefab == null) {
             Debug.LogError("Please specify arcVisualizerPrefab in the Inspector.");
         }
     }
 
-    void Update()
-    {
+    void Update() {
         // Get vector
         Vector3 vector1 = GetVectorFromGameObject(vectorObject1);
         Vector3 vector2 = GetVectorFromGameObject(vectorObject2);
@@ -34,16 +30,14 @@ public class VectorAngleVisualizer : MonoBehaviour
         VisualizeAngle(vector1, vector2, vectorObject1.transform.position, angle);
     }
 
-    Vector3 GetVectorFromGameObject(GameObject obj)
-    {
-        if (!obj)
-        {
+    Vector3 GetVectorFromGameObject(GameObject obj) {
+        if (!obj) {
             Debug.LogError("GameObject is empty.");
             return Vector3.zero;
         }
 
         // Get the direction vector, such as transform.forward
-        Vector3 direction = obj.transform.forward.normalized;
+        Vector3 direction = obj.transform.up.normalized;
 
         // Get the length of the model
         float length = GetModelLength(obj);
@@ -51,41 +45,34 @@ public class VectorAngleVisualizer : MonoBehaviour
         // Calculate the actual vector
         Vector3 vector = direction * length;
 
-        return vector;
+        return direction;
     }
 
-    private static float GetModelLength(GameObject obj)
-    {
+    private static float GetModelLength(GameObject obj) {
         // Initialize merged bounding boxes
         Bounds combinedBounds = new Bounds(obj.transform.position, Vector3.zero);
 
         // Traverse all child objects and find the part with Renderer component
         Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
 
-        if (renderers.Length > 0)
-        {
-            foreach (Renderer renderer in renderers)
-            {
+        if (renderers.Length > 0) {
+            foreach (Renderer renderer in renderers) {
                 combinedBounds.Encapsulate(renderer.bounds); // Merge bounding boxes
             }
 
             // Assume that the length of the model is along the Z-axis
             return combinedBounds.size.z;
         }
-        else
-        {
+        else {
             Debug.LogWarning(obj.name + "Without Renderer component, length cannot be calculated。");
             return 1.0f; // If no Renderer is found, use the default length
         }
     }
 
-    void VisualizeAngle(Vector3 vector1, Vector3 vector2, Vector3 startPosition, float angle)
-    {
-        if (arcVisualizerPrefab)
-        {
+    void VisualizeAngle(Vector3 vector1, Vector3 vector2, Vector3 startPosition, float angle) {
+        if (arcVisualizerPrefab) {
             // If there is already an instance, destroy it first
-            if (_arcInstance)
-            {
+            if (_arcInstance) {
                 Destroy(_arcInstance);
             }
 
@@ -94,34 +81,28 @@ public class VectorAngleVisualizer : MonoBehaviour
 
             // Get the arc's script and update the arc's shape and direction
             DynamicArcVisualizer arcVisualizer = _arcInstance.GetComponent<DynamicArcVisualizer>();
-            if (arcVisualizer)
-            {
+            if (arcVisualizer) {
                 // Set the radius of the arc (can be adjusted as needed)
                 arcVisualizer.SetRadius(2.0f);
 
                 // Update arc shape and direction
                 arcVisualizer.UpdateArc(vector1, vector2, startPosition, angle);
             }
-            else
-            {
+            else {
                 Debug.LogError("Prefab is missing the DynamicArcVisualizer script.");
             }
         }
-        else
-        {
+        else {
             Debug.LogWarning("Please specify an arcVisualizerPrefab to visualize the angle.");
         }
     }
 
     // Update the Text on the screen to display the angle information
-    void UpdateAngleText(float angle)
-    {
-        if (angleText)
-        {
+    void UpdateAngleText(float angle) {
+        if (angleText) {
             angleText.text = "Angle: " + angle.ToString("F2") + "°";
         }
-        else
-        {
+        else {
             Debug.LogWarning("Please set angleText in Inspector.");
         }
     }
