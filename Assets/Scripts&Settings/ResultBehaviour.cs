@@ -4,6 +4,7 @@ using TMPro;
 public class ResultBehaviour : MonoBehaviour
 {
     [SerializeField] TextMeshPro textObject;
+    [SerializeField] TextMeshPro testObject;
     [SerializeField] GameObject redArrow;
     [SerializeField] GameObject blueArrow;
     [SerializeField] GameObject normalArrow;
@@ -11,7 +12,8 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] GameObject dashedLinePrefab; // Added: Dashed Prefab reference
     private GameObject _dashedLineInstance; // Added: Example of a dotted line
 
-    public int mode;
+    public int mode = 0;
+    public bool test = false;
 
     private void Start()
     {
@@ -71,11 +73,18 @@ public class ResultBehaviour : MonoBehaviour
         }
 
         textObject.text = text;
-
-        transform.forward = greenVector;
         Vector3 magnitude = transform.localScale;
         magnitude.z = Vector3.Magnitude(greenVector);
-        transform.localScale = magnitude;
+
+        if (test)
+        {
+            float difference = (int) (100 * Vector3.Magnitude(transform.forward.normalized - greenVector.normalized)) / 100.0f;
+            testObject.text = "Difference: " + difference;
+        } else { 
+            transform.forward = greenVector;
+            transform.localScale = magnitude;
+        }
+        
 
         normalArrow.transform.forward = Vector3.Cross(blueVector, redVector);
         normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
