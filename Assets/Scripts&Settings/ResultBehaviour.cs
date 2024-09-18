@@ -29,46 +29,33 @@ public class ResultBehaviour : MonoBehaviour
         Vector3 blueVector = blueArrow.transform.forward;
         Vector3 greenVector = transform.forward;
         string text = textObject.text;
+
+        ResetPosition();
+        if (mode != 1)
+        {
+            parallelogram.SetActive(false);
+        }
+        DisableDashedLine();
         switch (mode)
         {
             case 0: // Dot Product
-                redArrow.transform.localPosition = Vector3.zero;
-                blueArrow.transform.localPosition = Vector3.zero;
-                transform.localPosition = Vector3.zero;
-                parallelogram.SetActive(false);
                 text = "" + Vector3.Dot(redVector, blueVector);
-                DisableDashedLine(); // Added: Disabled the dashed line
                 break;
             case 1: // Cross Product + Parallelogram
-                redArrow.transform.localPosition = Vector3.zero;
-                blueArrow.transform.localPosition = Vector3.zero;
-                transform.localPosition = Vector3.zero;
                 parallelogram.SetActive(true);
                 greenVector = Vector3.Cross(blueVector, redVector);
                 text = "" + Vector3.Magnitude(greenVector);
-                DisableDashedLine(); // Added: Disabled the dashed line
                 break;
             case 2: // Vector Addition
-                redArrow.transform.localPosition = Vector3.zero;
                 blueArrow.transform.localPosition = redArrow.transform.forward * 14;
-                transform.localPosition = Vector3.zero;
-                parallelogram.SetActive(false);
                 greenVector = redVector + blueVector;
-                DisableDashedLine(); // Added: Disabled the dashed line
                 break;
             case 3: // Vector Subtraction
-                redArrow.transform.localPosition = Vector3.zero;
-                blueArrow.transform.localPosition = Vector3.zero;
                 transform.localPosition = blueArrow.transform.forward * 14;
-                parallelogram.SetActive(false);
                 greenVector = redVector - blueVector;
-                DisableDashedLine(); // Added: Disabled the dashed line
                 break;
             case 4: // Projection
-                redArrow.transform.localPosition = Vector3.zero;
-                blueArrow.transform.localPosition = Vector3.zero;
                 greenVector = Vector3.Project(redVector, blueVector);
-                parallelogram.SetActive(false);
 
                 // Calculate the endpoint position of redArrow
                 Vector3 redArrowEndPoint = redArrow.transform.position +
@@ -116,5 +103,12 @@ public class ResultBehaviour : MonoBehaviour
         {
             _dashedLineInstance.SetActive(false);
         }
+    }
+
+    void ResetPosition()
+    {
+        redArrow.transform.localPosition = Vector3.zero;
+        blueArrow.transform.localPosition = Vector3.zero;
+        transform.localPosition = Vector3.zero;
     }
 }
