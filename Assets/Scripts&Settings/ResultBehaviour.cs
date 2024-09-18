@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using System;
+
 
 public class ResultBehaviour : MonoBehaviour
 {
@@ -8,7 +10,7 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] GameObject redArrow;
     [SerializeField] GameObject blueArrow;
     [SerializeField] GameObject normalArrow;
-    [SerializeField] GameObject parallelogram;
+    [SerializeField] GameObject[] parallelograms = new GameObject[6];
     [SerializeField] GameObject dashedLinePrefab; // Added: Dashed Prefab reference
     private GameObject _dashedLineInstance; // Added: Example of a dotted line
 
@@ -33,20 +35,23 @@ public class ResultBehaviour : MonoBehaviour
         string text = textObject.text;
 
         ResetPosition();
-        if (mode != 1)
+        if (mode != 1 && mode != 6)
         {
-            parallelogram.SetActive(false);
+            for (int i = 0; i < parallelograms.Length; i++)
+            {
+                parallelograms[i].SetActive(false);
+            }
         }
         DisableDashedLine();
         switch (mode)
         {
             case 0: // Dot Product
-                text = "" + Vector3.Dot(redVector, blueVector);
+                text = "Dot Product:\n" + Math.Round(Vector3.Dot(redVector, blueVector), 2);
                 break;
             case 1: // Cross Product + Parallelogram
-                parallelogram.SetActive(true);
+                parallelograms[0].SetActive(true);
                 greenVector = Vector3.Cross(blueVector, redVector);
-                text = "" + Vector3.Magnitude(greenVector);
+                text = "Area:\n" + Math.Round(Vector3.Magnitude(greenVector), 2);
                 break;
             case 2: // Vector Addition
                 blueArrow.transform.localPosition = redArrow.transform.forward * 14;
@@ -73,6 +78,12 @@ public class ResultBehaviour : MonoBehaviour
             case 5: // Point to line
                 break;
             case 6: // Parallelepiped
+                for (int i = 0; i < parallelograms.Length; i++)
+                {
+                    parallelograms[i].SetActive(true);
+                }
+                float volume = Math.Abs(Vector3.Dot(Vector3.Cross(redVector, blueVector), greenVector));
+                text = "Volume:\n" + Math.Round(volume, 2);
                 break;
             case 7: // Point to plane
                 break;
@@ -82,7 +93,7 @@ public class ResultBehaviour : MonoBehaviour
         Vector3 magnitude = transform.localScale;
         magnitude.z = Vector3.Magnitude(greenVector);
 
-        if (test)
+        if (test || mode > 4)
         {
             float difference = (int) (100 * Vector3.Magnitude(transform.forward.normalized - greenVector.normalized)) / 100.0f;
             testObject.text = "Difference: " + difference;
