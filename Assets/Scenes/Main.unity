@@ -3551,6 +3551,11 @@ PrefabInstance:
       propertyPath: blueArrow
       value: 
       objectReference: {fileID: 1397316748}
+    - target: {fileID: 5324903907414746358, guid: 2003290228248034aa3a5566c8cf2fcb,
+        type: 3}
+      propertyPath: greenArrow
+      value: 
+      objectReference: {fileID: 1628669339}
     - target: {fileID: 8663118434901480188, guid: 2003290228248034aa3a5566c8cf2fcb,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -70,6 +70,12 @@ public class ResultBehaviour : MonoBehaviour
                 // Enable and update dotted lines
                 EnableDashedLine(redArrowEndPoint, projectionEndPoint);
                 break;
+            case 5: // Point to line
+                break;
+            case 6: // Parallelepiped
+                break;
+            case 7: // Point to plane
+                break;
         }
 
         textObject.text = text;
