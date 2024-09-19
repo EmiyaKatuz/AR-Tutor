@@ -10,6 +10,7 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] GameObject redArrow;
     [SerializeField] GameObject blueArrow;
     [SerializeField] GameObject normalArrow;
+    [SerializeField] GameObject point;
     [SerializeField] GameObject[] parallelograms = new GameObject[6];
     [SerializeField] GameObject dashedLinePrefab; // Added: Dashed Prefab reference
     private GameObject _dashedLineInstance; // Added: Example of a dotted line
@@ -35,7 +36,7 @@ public class ResultBehaviour : MonoBehaviour
         string text = textObject.text;
 
         ResetPosition();
-        if (mode != 1 && mode != 6)
+        if (mode != 1 && mode != 6 && mode != 7)
         {
             for (int i = 0; i < parallelograms.Length; i++)
             {
@@ -80,6 +81,7 @@ public class ResultBehaviour : MonoBehaviour
                 EnableDashedLine(redArrowEndPoint, projectionEndPoint);
                 break;
             case 5: // Point to line
+                EnableDashedLine(point.transform.localPosition, Vector3.zero);
                 break;
             case 6: // Parallelepiped
                 for (int i = 0; i < parallelograms.Length; i++)
@@ -90,6 +92,12 @@ public class ResultBehaviour : MonoBehaviour
                 text = "Volume:\n" + Math.Round(volume, 2);
                 break;
             case 7: // Point to plane
+                parallelograms[0].SetActive(true);
+                for (int i = 1; i < parallelograms.Length; i++)
+                {
+                    parallelograms[i].SetActive(false);
+                }
+                EnableDashedLine(point.transform.localPosition, Vector3.zero);
                 break;
         }
 
