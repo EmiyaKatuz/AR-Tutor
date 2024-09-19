@@ -7058,6 +7058,7 @@ MonoBehaviour:
   redArrow: {fileID: 1261161138}
   blueArrow: {fileID: 1397316748}
   normalArrow: {fileID: 1669814102}
+  point: {fileID: 35584502}
   parallelograms:
   - {fileID: 1935215690}
   - {fileID: 964231913}
@@ -7067,7 +7068,7 @@ MonoBehaviour:
   - {fileID: 956298246}
   dashedLinePrefab: {fileID: 9116596624815185441, guid: 715c297a02e7dfb4ba86155029604973,
     type: 3}
-  mode: 1
+  mode: 7
   test: 0
 --- !u!1 &1630636224
 GameObject:
