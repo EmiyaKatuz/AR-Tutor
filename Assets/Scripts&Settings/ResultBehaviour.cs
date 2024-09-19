@@ -81,7 +81,11 @@ public class ResultBehaviour : MonoBehaviour
                 EnableDashedLine(redArrowEndPoint, projectionEndPoint);
                 break;
             case 5: // Point to line
-                EnableDashedLine(point.transform.localPosition, Vector3.zero);
+                Vector3 pointDisplacement = point.transform.localPosition;
+                redArrow.transform.forward = pointDisplacement;
+                redArrow.transform.localScale = new Vector3(1, 1, Vector3.Magnitude(pointDisplacement) / 14);
+                greenVector = Vector3.Project(pointDisplacement / 14, blueVector);
+                EnableDashedLine(pointDisplacement, redArrow.transform.position + greenVector * 14);
                 break;
             case 6: // Parallelepiped
                 for (int i = 0; i < parallelograms.Length; i++)
@@ -105,10 +109,9 @@ public class ResultBehaviour : MonoBehaviour
         Vector3 magnitude = transform.localScale;
         magnitude.z = Vector3.Magnitude(greenVector);
 
-        if (test || mode > 4)
+        if (test || mode > 5)
         {
-            float difference = (int) (100 * Vector3.Magnitude(transform.forward.normalized - greenVector.normalized)) / 100.0f;
-            testObject.text = "Difference: " + difference;
+            testObject.text = "Difference: " + Math.Round(Vector3.Magnitude(transform.forward.normalized - greenVector.normalized), 2);
         } else { 
             transform.forward = greenVector;
             transform.localScale = magnitude;
