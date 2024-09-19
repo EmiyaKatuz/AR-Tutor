@@ -49,6 +49,10 @@ public class ResultBehaviour : MonoBehaviour
                 text = "Dot Product:\n" + Math.Round(Vector3.Dot(redVector, blueVector), 2);
                 break;
             case 1: // Cross Product + Parallelogram
+                for (int i = 1; i < parallelograms.Length; i++)
+                {
+                    parallelograms[i].SetActive(false);
+                }
                 parallelograms[0].SetActive(true);
                 greenVector = Vector3.Cross(blueVector, redVector);
                 text = "Area:\n" + Math.Round(Vector3.Magnitude(greenVector), 2);
