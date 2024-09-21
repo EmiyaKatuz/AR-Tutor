@@ -7068,7 +7068,8 @@ MonoBehaviour:
   - {fileID: 956298246}
   dashedLinePrefab: {fileID: 9116596624815185441, guid: 715c297a02e7dfb4ba86155029604973,
     type: 3}
-  mode: 5
+  arcVisualizer: {fileID: 1699894089}
+  mode: 7
   test: 0
 --- !u!1 &1630636224
 GameObject:

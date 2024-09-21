@@ -14,13 +14,10 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] GameObject point;
     [SerializeField] GameObject[] parallelograms = new GameObject[6];
     [SerializeField] GameObject dashedLinePrefab; // Added: Dashed Prefab reference
+    [SerializeField] GameObject arcVisualizer;
     private List<GameObject> dashedLineInstances = new List<GameObject>();
     public int mode = 0;
     public bool test = false;
-
-    private void Start()
-    {
-    }
 
     // Update is called once per frame
     void Update()
@@ -32,9 +29,9 @@ public class ResultBehaviour : MonoBehaviour
         ResetPosition();
         if (mode != 1 && mode != 6 && mode != 7)
         {
-            for (int i = 0; i < parallelograms.Length; i++)
+            foreach (var t in parallelograms)
             {
-                parallelograms[i].SetActive(false);
+                t.SetActive(false);
             }
         }
 
@@ -118,21 +115,23 @@ public class ResultBehaviour : MonoBehaviour
 
                 // Do not modify the orientation or position of the redArrow.
                 // Hide unnecessary elements
+                arcVisualizer.SetActive(false);
                 normalArrow.SetActive(false);
-                for (int i = 0; i < parallelograms.Length; i++)
+                foreach (var t in parallelograms)
                 {
-                    parallelograms[i].SetActive(false);
+                    t.SetActive(false);
                 }
 
                 break;
             case 6: // Parallelepiped
-                for (int i = 0; i < parallelograms.Length; i++)
+                foreach (var t in parallelograms)
                 {
-                    parallelograms[i].SetActive(true);
+                    t.SetActive(true);
                 }
 
                 float volume = Math.Abs(Vector3.Dot(Vector3.Cross(redVector, blueVector), greenVector));
                 text = "Volume:\n" + Math.Round(volume, 2);
+                arcVisualizer.SetActive(false);
                 break;
             case 7: // Point to plane
                 parallelograms[0].SetActive(true);
@@ -141,7 +140,47 @@ public class ResultBehaviour : MonoBehaviour
                     parallelograms[i].SetActive(false);
                 }
 
-                EnableDashedLine(point.transform.localPosition, Vector3.zero);
+                Vector3 greenVectorEndPoint = transform.position + transform.forward * 14;
+                point.transform.position = greenVectorEndPoint;
+                // Calculate the normal vector to the plane and a point on the plane.
+                Vector3 planeNormal = Vector3.Cross(redVector, blueVector).normalized;
+                Vector3 planePoint = redArrow.transform.position;
+                // Calculate the distance from the point to the plane
+                float distanceToPlane = Vector3.Dot(planeNormal, point.transform.position - planePoint);
+                // Calculate the closest point on the plane to the point
+                Vector3 closestPointOnPlane = point.transform.position - distanceToPlane * planeNormal;
+                // Update display text to show distance information
+                text = "Distance:\n" + Math.Round(Math.Abs(distanceToPlane), 2);
+                // Draw the dotted line from the point to the nearest point on the plane
+                EnableDashedLine(point.transform.position, closestPointOnPlane);
+
+                // Planar basis vectors and lengths
+                Vector3 planeBasisVector1 = redArrow.transform.forward.normalized;
+                Vector3 planeBasisVector2 = blueArrow.transform.forward.normalized;
+                float length1 = redArrow.transform.localScale.z * 14;
+                float length2 = blueArrow.transform.localScale.z * 14;
+                // Calculate the vector of the projected point with respect to the plane origin
+                Vector3 vectorToProjection = closestPointOnPlane - planePoint;
+                // Compute the square length of the basis vectors
+                float length1Sqr = length1 * length1;
+                float length2Sqr = length2 * length2;
+                // Calculation of coefficients
+                float coeff1 = Vector3.Dot(vectorToProjection, planeBasisVector1 * length1) / length1Sqr;
+                float coeff2 = Vector3.Dot(vectorToProjection, planeBasisVector2 * length2) / length2Sqr;
+                // Determine if the projected point is inside a parallelogram
+                bool isProjectionInsidePlane = coeff1 is >= 0 and <= 1 && coeff2 is >= 0 and <= 1;
+                // Calculate the center of the plane
+                Vector3 planeCenter = planePoint + (planeBasisVector1 * (length1 * 0.5f)) +
+                                      (planeBasisVector2 * (length2 * 0.5f));
+                // If the point of projection is out of the plane, draw an extension line from the point of projection to the center of the plane
+                if (!isProjectionInsidePlane)
+                {
+                    EnableDashedLine(closestPointOnPlane, planeCenter);
+                }
+
+                // Hide unnecessary elements
+                arcVisualizer.SetActive(false);
+                normalArrow.SetActive(false);
                 break;
         }
 
