@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System;
+using System.Collections.Generic;
 
 
 public class ResultBehaviour : MonoBehaviour
@@ -13,18 +14,12 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] GameObject point;
     [SerializeField] GameObject[] parallelograms = new GameObject[6];
     [SerializeField] GameObject dashedLinePrefab; // Added: Dashed Prefab reference
-    private GameObject _dashedLineInstance; // Added: Example of a dotted line
-
+    private List<GameObject> dashedLineInstances = new List<GameObject>();
     public int mode = 0;
     public bool test = false;
 
     private void Start()
     {
-        if (dashedLinePrefab)
-        {
-            _dashedLineInstance = Instantiate(dashedLinePrefab, Vector3.zero, Quaternion.identity);
-            _dashedLineInstance.SetActive(false); // Initially hide the dotted line
-        }
     }
 
     // Update is called once per frame
@@ -34,7 +29,6 @@ public class ResultBehaviour : MonoBehaviour
         Vector3 blueVector = blueArrow.transform.forward;
         Vector3 greenVector = transform.forward;
         string text = textObject.text;
-
         ResetPosition();
         if (mode != 1 && mode != 6 && mode != 7)
         {
@@ -43,6 +37,7 @@ public class ResultBehaviour : MonoBehaviour
                 parallelograms[i].SetActive(false);
             }
         }
+
         DisableDashedLine();
         switch (mode)
         {
@@ -54,6 +49,7 @@ public class ResultBehaviour : MonoBehaviour
                 {
                     parallelograms[i].SetActive(false);
                 }
+
                 parallelograms[0].SetActive(true);
                 greenVector = Vector3.Cross(blueVector, redVector);
                 text = "Area:\n" + Math.Round(Vector3.Magnitude(greenVector), 2);
@@ -68,30 +64,73 @@ public class ResultBehaviour : MonoBehaviour
                 break;
             case 4: // Projection
                 greenVector = Vector3.Project(redVector, blueVector);
-
                 // Calculate the endpoint position of redArrow
                 Vector3 redArrowEndPoint = redArrow.transform.position +
                                            redArrow.transform.forward * 14;
-
                 // Calculate the endpoint positions of the projection vectors
                 Vector3 projectionEndPoint =
                     redArrow.transform.position + greenVector * 14;
-
                 // Enable and update dotted lines
                 EnableDashedLine(redArrowEndPoint, projectionEndPoint);
                 break;
             case 5: // Point to line
-                Vector3 pointDisplacement = point.transform.localPosition;
-                redArrow.transform.forward = pointDisplacement;
-                redArrow.transform.localScale = new Vector3(1, 1, Vector3.Magnitude(pointDisplacement) / 14);
-                greenVector = Vector3.Project(pointDisplacement / 14, blueVector);
-                EnableDashedLine(pointDisplacement, redArrow.transform.position + greenVector * 14);
+                // Getting the start and direction of a line
+                Vector3 lineOrigin = blueArrow.transform.position;
+                Vector3 lineDirection = blueArrow.transform.forward.normalized;
+                // Calculate the endpoint position of redArrow
+                Vector3 redArrowPoint = redArrow.transform.position + redArrow.transform.forward * 14;
+                // Set the position of point to the endpoint of redArrow.
+                point.transform.position = redArrowPoint;
+                // Get the position of point
+                Vector3 pointPosition = point.transform.position;
+                // Calculate the vector from the starting point of the line to the point
+                Vector3 originToPoint = pointPosition - lineOrigin;
+                // Project the above vectors in the direction of the line to get the projection vector on the line
+                Vector3 projection = Vector3.Project(originToPoint, lineDirection);
+                // Calculate the coordinates of the point on the line that is closest to the point
+                Vector3 closestPointOnLine = lineOrigin + projection;
+                // Calculate the shortest distance from a point to a line
+                float distance = Vector3.Distance(pointPosition, closestPointOnLine);
+                // Update display text to show distance information
+                text = "Distance: " + Math.Round(distance, 2);
+                // Draws a dotted line from point to the nearest point on the line.
+                EnableDashedLine(pointPosition, closestPointOnLine);
+
+                // Get the length of blueArrow
+                float blueArrowLength = blueArrow.transform.localScale.z * 14;
+                // Calculate the start and end points of blueArrow
+                Vector3 blueArrowStart = blueArrow.transform.position;
+                Vector3 blueArrowEnd = blueArrowStart + blueArrow.transform.forward * blueArrowLength;
+                // Calculate the vector from the projected point to blueArrowStart.
+                Vector3 startToProjection = closestPointOnLine - blueArrowStart;
+                // Calculate the direction vector and length of blueArrow.
+                Vector3 blueArrowDirection = (blueArrowEnd - blueArrowStart).normalized;
+                float blueArrowMagnitude = Vector3.Distance(blueArrowStart, blueArrowEnd);
+                // Calculate the length of the projection point on the blueArrow.
+                float projectionLength = Vector3.Dot(startToProjection, blueArrowDirection);
+                // Determine if the projected point is within the model range of blueArrow
+                bool isProjectionOnSegment = projectionLength >= 0 && projectionLength <= blueArrowMagnitude;
+                if (!isProjectionOnSegment)
+                {
+                    // Draw the dotted line from the projection point to blueArrowStart.
+                    EnableDashedLine(closestPointOnLine, blueArrowStart);
+                }
+
+                // Do not modify the orientation or position of the redArrow.
+                // Hide unnecessary elements
+                normalArrow.SetActive(false);
+                for (int i = 0; i < parallelograms.Length; i++)
+                {
+                    parallelograms[i].SetActive(false);
+                }
+
                 break;
             case 6: // Parallelepiped
                 for (int i = 0; i < parallelograms.Length; i++)
                 {
                     parallelograms[i].SetActive(true);
                 }
+
                 float volume = Math.Abs(Vector3.Dot(Vector3.Cross(redVector, blueVector), greenVector));
                 text = "Volume:\n" + Math.Round(volume, 2);
                 break;
@@ -101,6 +140,7 @@ public class ResultBehaviour : MonoBehaviour
                 {
                     parallelograms[i].SetActive(false);
                 }
+
                 EnableDashedLine(point.transform.localPosition, Vector3.zero);
                 break;
         }
@@ -108,15 +148,16 @@ public class ResultBehaviour : MonoBehaviour
         textObject.text = text;
         Vector3 magnitude = transform.localScale;
         magnitude.z = Vector3.Magnitude(greenVector);
-
         if (test || mode > 5)
         {
-            testObject.text = "Difference: " + Math.Round(Vector3.Magnitude(transform.forward.normalized - greenVector.normalized), 2);
-        } else { 
+            testObject.text = "Difference: " +
+                              Math.Round(Vector3.Magnitude(transform.forward.normalized - greenVector.normalized), 2);
+        }
+        else
+        {
             transform.forward = greenVector;
             transform.localScale = magnitude;
         }
-        
 
         normalArrow.transform.forward = Vector3.Cross(blueVector, redVector);
         normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
@@ -124,26 +165,30 @@ public class ResultBehaviour : MonoBehaviour
 
     void EnableDashedLine(Vector3 startPoint, Vector3 endPoint)
     {
-        if (_dashedLineInstance)
+        GameObject dashedLineInstance = Instantiate(dashedLinePrefab, Vector3.zero, Quaternion.identity);
+        LineRenderer lr = dashedLineInstance.GetComponent<LineRenderer>();
+        if (lr)
         {
-            LineRenderer lr = _dashedLineInstance.GetComponent<LineRenderer>();
-            if (lr)
-            {
-                lr.SetPosition(0, startPoint);
-                lr.SetPosition(1, endPoint);
-            }
-
-            _dashedLineInstance.SetActive(true);
+            lr.SetPosition(0, startPoint);
+            lr.SetPosition(1, endPoint);
         }
+
+        dashedLineInstance.SetActive(true);
+        dashedLineInstances.Add(dashedLineInstance);
     }
 
     // Added: Disable dashed lines
     void DisableDashedLine()
     {
-        if (_dashedLineInstance)
+        foreach (GameObject dashedLineInstance in dashedLineInstances)
         {
-            _dashedLineInstance.SetActive(false);
+            if (dashedLineInstance)
+            {
+                Destroy(dashedLineInstance);
+            }
         }
+
+        dashedLineInstances.Clear();
     }
 
     void ResetPosition()
