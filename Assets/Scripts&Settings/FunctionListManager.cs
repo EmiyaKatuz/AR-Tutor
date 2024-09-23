@@ -15,6 +15,8 @@ public class FunctionListManager : MonoBehaviour
             GameObject item = Instantiate(functionItemPrefab, transform);
             //item.transform.Find("Icon").GetComponent<Image>().sprite = data.icon;
             item.transform.Find("FunctionText").GetComponent<Text>().text = data.name;
+            //item.transform.Find("BottomText").GetComponent<Text>().text = data.output;
+            
 
             // Adding a click event
             item.GetComponent<Button>().onClick.AddListener(() => OnFunctionItemClicked(data));
@@ -34,4 +36,5 @@ public class FunctionData
     public string name;
     //public Sprite icon;
     //public string info;
+    //public string output;
 }

@@ -4,8 +4,9 @@ using UnityEngine.UI;
 public class FunctionPanelManager : MonoBehaviour
 {
     // Text component that references the top and bottom information bars
-    public Text topInfoText;
+    public Text topNameText;
     public Text bottomInfoText;
+    public Text topInfoText;
 
     // Referencing the Back Button
     public Button backButton;
@@ -31,10 +32,13 @@ public class FunctionPanelManager : MonoBehaviour
         currentFunctionData = data;
 
         // Update the text in the top information bar
-        topInfoText.text = data.name;
+        topNameText.text = data.name;
 
-        // Update the text in the bottom info field
-        //bottomInfoText.text = data.info;
+        // Update the text in the top info field
+        //topInfoText.text = data.info;
+
+        // Update the text in the bottom output field
+        //bottomInfoText.text = data.output;
 
         // Hide menu background
         menuBackground.SetActive(false);
