@@ -37,4 +37,5 @@ public class FunctionData
     //public Sprite icon;
     //public string info;
     //public string output;
+    //public int mode;
 }
