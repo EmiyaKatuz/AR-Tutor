@@ -6,6 +6,7 @@ public class FunctionPanelManager : MonoBehaviour
     // Text component that references the top and bottom information bars
     public Text topNameText;
     public Text bottomInfoText;
+
     public Text topInfoText;
 
     // Referencing the Back Button
@@ -15,7 +16,7 @@ public class FunctionPanelManager : MonoBehaviour
     public GameObject menuBackground;
 
     // Current Functional Data
-    private FunctionData currentFunctionData;
+    public FunctionData CurrentFunctionData { get; private set; }
 
     void Start()
     {
@@ -29,7 +30,7 @@ public class FunctionPanelManager : MonoBehaviour
     // Method of displaying the Function Details panel
     public void ShowFunctionPanel(FunctionData data)
     {
-        currentFunctionData = data;
+        CurrentFunctionData = data;
 
         // Update the text in the top information bar
         topNameText.text = data.name;
@@ -38,13 +39,19 @@ public class FunctionPanelManager : MonoBehaviour
         //topInfoText.text = data.info;
 
         // Update the text in the bottom output field
-        //bottomInfoText.text = data.output;
+        bottomInfoText.text = data.output;
 
         // Hide menu background
         menuBackground.SetActive(false);
 
         // Display function panel
         gameObject.SetActive(true);
+    }
+
+    void Update()
+    {
+        bottomInfoText.text = CurrentFunctionData.output;
+        //topInfoText.text = CurrentFunctionData.info;
     }
 
     // Returns the click event of the button

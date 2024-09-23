@@ -2147,7 +2147,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1295335794}
   m_HandleRect: {fileID: 1295335793}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2421,7 +2421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &633383448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2629,7 +2629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2667,7 +2667,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   topNameText: {fileID: 327127594}
-  bottomInfoText: {fileID: 869848127}
+  bottomInfoText: {fileID: 496562998}
   topInfoText: {fileID: 1212613847}
   backButton: {fileID: 1369846584}
   menuBackground: {fileID: 573959238}
@@ -3762,7 +3762,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
+  m_Color: {r: 0.16470589, g: 0.16470589, b: 0.16470589, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4538,7 +4538,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1009258031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6250,7 +6250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
+  m_Color: {r: 0.16470589, g: 0.16470589, b: 0.16470589, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6368,17 +6368,32 @@ MonoBehaviour:
   functionItemPrefab: {fileID: 7845832135529620846, guid: 1ec6467740eeff14ab2d9d553cf04d0d,
     type: 3}
   functionDataList:
-  - name: Vector addition
-  - name: Vector subtraction
-  - name: Dot product
-  - name: Cross product
-  - name: Normal vector
+  - name: Dot Product
+    output: 
+    mode: 0
+  - name: Cross product+Parallelogram
+    output: 
+    mode: 1
+  - name: Vector Addition
+    output: 
+    mode: 2
+  - name: Vector Subtraction
+    output: 
+    mode: 3
   - name: Projection
-  - name: Parallelogram
+    output: 
+    mode: 4
   - name: Point to line
-  - name: Parallelopiped
+    output: 
+    mode: 5
+  - name: Parallelepiped
+    output: 
+    mode: 6
   - name: Point to plane
+    output: 
+    mode: 7
   functionPanelManager: {fileID: 699958780}
+  resultBehaviour: {fileID: 1628669342}
 --- !u!1 &1397316748
 GameObject:
   m_ObjectHideFlags: 0
@@ -7210,8 +7225,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e24d796baeb9bd545929888148602e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textObject: {fileID: 1009258031}
-  testObject: {fileID: 633383448}
+  textObject: {fileID: 0}
+  testObject: {fileID: 0}
   redArrow: {fileID: 1261161138}
   blueArrow: {fileID: 1397316748}
   normalArrow: {fileID: 1669814102}
@@ -7226,7 +7241,6 @@ MonoBehaviour:
   dashedLinePrefab: {fileID: 9116596624815185441, guid: 715c297a02e7dfb4ba86155029604973,
     type: 3}
   arcVisualizer: {fileID: 1699894089}
-  mode: 7
   test: 0
 --- !u!1 &1630636224
 GameObject:
@@ -7575,7 +7589,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vectorObject1: {fileID: 1261161138}
-  vectorObject2: {fileID: 1628669339}
+  vectorObject2: {fileID: 1397316748}
   arcVisualizerPrefab: {fileID: 4204848332796726244, guid: c831a14f1467df64cbb6728aa1bdb4d4,
     type: 3}
   angleText: {fileID: 110746452}

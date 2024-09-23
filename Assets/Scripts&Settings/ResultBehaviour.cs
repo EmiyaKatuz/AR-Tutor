@@ -15,19 +15,32 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] GameObject[] parallelograms = new GameObject[6];
     [SerializeField] GameObject dashedLinePrefab; // Added: Dashed Prefab reference
     [SerializeField] GameObject arcVisualizer;
-    private List<GameObject> dashedLineInstances = new List<GameObject>();
-    public int mode = 0;
-    public bool test = false;
 
-    // Update is called once per frame
-    void Update()
+    private List<GameObject> dashedLineInstances = new List<GameObject>();
+    public bool test = false;
+    private string outputText;
+    public FunctionData CurrentFunctionData { get; private set; }
+
+    private void Start()
     {
-        Vector3 redVector = redArrow.transform.forward;
-        Vector3 blueVector = blueArrow.transform.forward;
-        Vector3 greenVector = transform.forward;
-        string text = textObject.text;
+        arcVisualizer.SetActive(false);
+    }
+
+    public void UpdateResult(FunctionData data)
+    {
+        CurrentFunctionData = data;
+
+        if (CurrentFunctionData == null)
+        {
+            Debug.LogWarning("FunctionData is null.");
+            return;
+        }
+
+        // Reset positions and initializations
         ResetPosition();
-        if (mode != 1 && mode != 6 && mode != 7)
+
+        // Disable or reset elements as needed
+        if (CurrentFunctionData.mode != 1 && CurrentFunctionData.mode != 6 && CurrentFunctionData.mode != 7)
         {
             foreach (var t in parallelograms)
             {
@@ -36,10 +49,27 @@ public class ResultBehaviour : MonoBehaviour
         }
 
         DisableDashedLine();
+
+        // Perform initial calculation
+        CalculateResult();
+    }
+
+    // Update is called once per frame
+    private void CalculateResult()
+    {
+        Vector3 redVector = redArrow.transform.forward;
+        Vector3 blueVector = blueArrow.transform.forward;
+        Vector3 greenVector = transform.forward;
+        int mode = CurrentFunctionData.mode;
+        string text = "";
+        DisableDashedLine();
         switch (mode)
         {
             case 0: // Dot Product
                 text = "Dot Product:\n" + Math.Round(Vector3.Dot(redVector, blueVector), 2);
+                point.SetActive(false);
+                normalArrow.SetActive(false);
+                arcVisualizer.SetActive(true);
                 break;
             case 1: // Cross Product + Parallelogram
                 for (int i = 1; i < parallelograms.Length; i++)
@@ -50,14 +80,22 @@ public class ResultBehaviour : MonoBehaviour
                 parallelograms[0].SetActive(true);
                 greenVector = Vector3.Cross(blueVector, redVector);
                 text = "Area:\n" + Math.Round(Vector3.Magnitude(greenVector), 2);
+                point.SetActive(false);
+                arcVisualizer.SetActive(true);
                 break;
             case 2: // Vector Addition
                 blueArrow.transform.localPosition = redArrow.transform.forward * 14;
                 greenVector = redVector + blueVector;
+                point.SetActive(false);
+                normalArrow.SetActive(false);
+                arcVisualizer.SetActive(true);
                 break;
             case 3: // Vector Subtraction
                 transform.localPosition = blueArrow.transform.forward * 14;
                 greenVector = redVector - blueVector;
+                point.SetActive(false);
+                normalArrow.SetActive(false);
+                arcVisualizer.SetActive(true);
                 break;
             case 4: // Projection
                 greenVector = Vector3.Project(redVector, blueVector);
@@ -69,6 +107,7 @@ public class ResultBehaviour : MonoBehaviour
                     redArrow.transform.position + greenVector * 14;
                 // Enable and update dotted lines
                 EnableDashedLine(redArrowEndPoint, projectionEndPoint);
+                arcVisualizer.SetActive(true);
                 break;
             case 5: // Point to line
                 // Getting the start and direction of a line
@@ -115,7 +154,6 @@ public class ResultBehaviour : MonoBehaviour
 
                 // Do not modify the orientation or position of the redArrow.
                 // Hide unnecessary elements
-                arcVisualizer.SetActive(false);
                 normalArrow.SetActive(false);
                 foreach (var t in parallelograms)
                 {
@@ -131,7 +169,6 @@ public class ResultBehaviour : MonoBehaviour
 
                 float volume = Math.Abs(Vector3.Dot(Vector3.Cross(redVector, blueVector), greenVector));
                 text = "Volume:\n" + Math.Round(volume, 2);
-                arcVisualizer.SetActive(false);
                 break;
             case 7: // Point to plane
                 parallelograms[0].SetActive(true);
@@ -179,15 +216,16 @@ public class ResultBehaviour : MonoBehaviour
                 }
 
                 // Hide unnecessary elements
-                arcVisualizer.SetActive(false);
                 normalArrow.SetActive(false);
+                point.SetActive(true);
                 break;
         }
 
-        textObject.text = text;
+        outputText = text;
+        CurrentFunctionData.output = text;
         Vector3 magnitude = transform.localScale;
         magnitude.z = Vector3.Magnitude(greenVector);
-        if (test || mode > 5)
+        if (test)
         {
             testObject.text = "Difference: " +
                               Math.Round(Vector3.Magnitude(transform.forward.normalized - greenVector.normalized), 2);
@@ -200,6 +238,22 @@ public class ResultBehaviour : MonoBehaviour
 
         normalArrow.transform.forward = Vector3.Cross(blueVector, redVector);
         normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
+    }
+
+    void Update()
+    {
+        if (CurrentFunctionData == null)
+        {
+            // No data to process, exit early
+            return;
+        }
+
+        CalculateResult();
+    }
+
+    public string GetOutput()
+    {
+        return outputText;
     }
 
     void EnableDashedLine(Vector3 startPoint, Vector3 endPoint)

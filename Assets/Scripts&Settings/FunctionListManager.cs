@@ -7,35 +7,67 @@ public class FunctionListManager : MonoBehaviour
     public GameObject functionItemPrefab;
     public List<FunctionData> functionDataList;
     public FunctionPanelManager functionPanelManager;
+    public ResultBehaviour resultBehaviour;
 
     void Start()
     {
         foreach (var data in functionDataList)
         {
             GameObject item = Instantiate(functionItemPrefab, transform);
-            //item.transform.Find("Icon").GetComponent<Image>().sprite = data.icon;
-            item.transform.Find("FunctionText").GetComponent<Text>().text = data.name;
-            //item.transform.Find("BottomText").GetComponent<Text>().text = data.output;
-            
+            FunctionItemController controller = item.GetComponent<FunctionItemController>();
+            if (controller != null)
+            {
+                // Assignment FunctionData
+                controller.functionData = data;
 
-            // Adding a click event
-            item.GetComponent<Button>().onClick.AddListener(() => OnFunctionItemClicked(data));
+                // Initialize the display
+                if (controller.functionText)
+                {
+                    controller.functionText.text = data.name;
+                }
+
+                // Assign the function result text
+                if (controller.functionResult)
+                {
+                    controller.functionResult.text = data.output;
+                }
+
+                // Assign the ResultBehaviour and FunctionPanelManager references
+                // We need to get the Button component to add the click listener
+                Button button = item.GetComponent<Button>();
+                if (button != null)
+                {
+                    button.onClick.AddListener(() =>
+                    {
+                        // When the button is clicked, call the OnItemClicked method
+                        OnFunctionItemClicked(controller);
+                    });
+                }
+            }
         }
     }
 
-    void OnFunctionItemClicked(FunctionData data)
+    void OnFunctionItemClicked(FunctionItemController controller)
     {
-        // Implementing Click Functions
-        functionPanelManager.ShowFunctionPanel(data);
-    }
-}
+        // Update the result using the ResultBehaviour
+        if (resultBehaviour != null)
+        {
+            resultBehaviour.UpdateResult(controller.functionData);
 
-[System.Serializable]
-public class FunctionData
-{
-    public string name;
-    //public Sprite icon;
-    //public string info;
-    //public string output;
-    //public int mode;
+            // Update the functionData output
+            controller.functionData.output = resultBehaviour.GetOutput();
+
+            // Update the functionResult text (if applicable)
+            if (controller.functionResult)
+            {
+                controller.functionResult.text = controller.functionData.output;
+            }
+        }
+
+        // Show the function panel using the FunctionPanelManager
+        if (functionPanelManager != null)
+        {
+            functionPanelManager.ShowFunctionPanel(controller.functionData);
+        }
+    }
 }
