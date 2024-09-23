@@ -66,7 +66,7 @@ public class ResultBehaviour : MonoBehaviour
         switch (mode)
         {
             case 0: // Dot Product
-                text = "Dot Product:\n" + Math.Round(Vector3.Dot(redVector, blueVector), 2);
+                text = "Dot Product:\n" + Math.Round(Vector3.Dot(redVector, greenVector), 2);
                 point.SetActive(false);
                 normalArrow.SetActive(false);
                 arcVisualizer.SetActive(true);
