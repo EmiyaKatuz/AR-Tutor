@@ -65,8 +65,11 @@ public class ResultBehaviour : MonoBehaviour
         DisableDashedLine();
         switch (mode)
         {
-            case 0: // Dot Product
-                text = "Dot Product:\n" + Math.Round(Vector3.Dot(redVector, greenVector), 2);
+            case 0: // Dot Product + Angle Calculation
+                float dot = Vector3.Dot(redVector, greenVector);
+                float magnitudes = Vector3.Magnitude(redVector) * Vector3.Magnitude(greenVector);
+                text = "Dot Product:\n" + Math.Round(dot, 2)
+                    + "\nAngle:\n" + Math.Round(Math.Acos(dot / magnitudes), 2);
                 point.SetActive(false);
                 normalArrow.SetActive(false);
                 arcVisualizer.SetActive(true);
