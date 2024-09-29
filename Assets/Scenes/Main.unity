@@ -6393,7 +6393,7 @@ MonoBehaviour:
     output: 
     mode: 7
   functionPanelManager: {fileID: 699958780}
-  resultBehaviour: {fileID: 1628669342}
+  resultBehaviour: {fileID: 0}
 --- !u!1 &1397316748
 GameObject:
   m_ObjectHideFlags: 0
@@ -7174,7 +7174,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1628669341}
   - component: {fileID: 1628669340}
-  - component: {fileID: 1628669342}
   m_Layer: 0
   m_Name: GreenVector
   m_TagString: Untagged
@@ -7213,35 +7212,6 @@ Transform:
   - {fileID: 926027297}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1628669342
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1628669339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e24d796baeb9bd545929888148602e81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textObject: {fileID: 0}
-  testObject: {fileID: 0}
-  redArrow: {fileID: 1261161138}
-  blueArrow: {fileID: 1397316748}
-  normalArrow: {fileID: 1669814102}
-  point: {fileID: 35584502}
-  parallelograms:
-  - {fileID: 1935215690}
-  - {fileID: 964231913}
-  - {fileID: 2128713463}
-  - {fileID: 1725239685}
-  - {fileID: 549372705}
-  - {fileID: 956298246}
-  dashedLinePrefab: {fileID: 9116596624815185441, guid: 715c297a02e7dfb4ba86155029604973,
-    type: 3}
-  arcVisualizer: {fileID: 1699894089}
-  test: 0
 --- !u!1 &1630636224
 GameObject:
   m_ObjectHideFlags: 0
@@ -7614,6 +7584,70 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 601317841}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1782949174
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1782949176}
+  - component: {fileID: 1782949175}
+  m_Layer: 0
+  m_Name: Result
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1782949175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782949174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e24d796baeb9bd545929888148602e81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  redArrow: {fileID: 1261161138}
+  blueArrow: {fileID: 1397316748}
+  greenArrow: {fileID: 1628669339}
+  normalArrow: {fileID: 1669814102}
+  point: {fileID: 35584502}
+  parallelograms:
+  - {fileID: 1935215690}
+  - {fileID: 964231913}
+  - {fileID: 2128713463}
+  - {fileID: 1725239685}
+  - {fileID: 549372705}
+  - {fileID: 956298246}
+  dashedLinePrefab: {fileID: 9116596624815185441, guid: 715c297a02e7dfb4ba86155029604973,
+    type: 3}
+  arcVisualizer: {fileID: 1699894089}
+  topText: {fileID: 1212613847}
+  bottomText: {fileID: 496562998}
+  mode: 3
+  step: 0
+  test: 0
+--- !u!4 &1782949176
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782949174}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.0029569864, y: 0, z: 13}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1806591352
 GameObject:
   m_ObjectHideFlags: 0
@@ -8147,6 +8181,7 @@ SceneRoots:
   - {fileID: 1261161140}
   - {fileID: 1397316750}
   - {fileID: 1628669341}
+  - {fileID: 1782949176}
   - {fileID: 1669814105}
   - {fileID: 1009258033}
   - {fileID: 1699894091}
