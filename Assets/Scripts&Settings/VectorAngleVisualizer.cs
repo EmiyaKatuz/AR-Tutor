@@ -8,6 +8,7 @@ public class VectorAngleVisualizer : MonoBehaviour
     public GameObject arcVisualizerPrefab;
     public Text angleText; // Text UI for displaying angle information
     private GameObject _arcInstance;
+    public Vector3 offset;
 
     void Start()
     {
@@ -30,8 +31,12 @@ public class VectorAngleVisualizer : MonoBehaviour
         // Display angle information
         UpdateAngleText(angle);
 
+        Vector3 offset1 = vectorObject1.transform.position + offset;
+        Vector3 offset2 = vectorObject2.transform.position + new Vector3(0, 0, 0);
+        Vector3 midpoint = (offset1 + offset2) / 2;
+
         // Visualize the angle
-        VisualizeAngle(vector1, vector2, vectorObject1.transform.position, angle);
+        VisualizeAngle(vector1, vector2, midpoint, angle);
     }
 
     Vector3 GetVectorFromGameObject(GameObject obj)
@@ -43,7 +48,7 @@ public class VectorAngleVisualizer : MonoBehaviour
         }
 
         // Get the direction vector, such as transform.forward
-        Vector3 direction = obj.transform.up.normalized;
+        Vector3 direction = obj.transform.forward.normalized;
 
         // Get the length of the model
         float length = GetModelLength(obj);
