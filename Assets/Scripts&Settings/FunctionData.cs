@@ -4,7 +4,6 @@ using UnityEngine;
 public class FunctionData
 {
     public string name;
-
     //public Sprite icon;
     //public string info;
     public string output;

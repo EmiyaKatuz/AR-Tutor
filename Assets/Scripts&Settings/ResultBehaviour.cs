@@ -1,23 +1,32 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
 
 
 public class ResultBehaviour : MonoBehaviour
 {
-    [SerializeField] TextMeshPro textObject;
-    [SerializeField] TextMeshPro testObject;
     [SerializeField] GameObject redArrow;
     [SerializeField] GameObject blueArrow;
+    [SerializeField] GameObject greenArrow;
     [SerializeField] GameObject normalArrow;
     [SerializeField] GameObject point;
     [SerializeField] GameObject[] parallelograms = new GameObject[6];
     [SerializeField] GameObject dashedLinePrefab; // Added: Dashed Prefab reference
     [SerializeField] GameObject arcVisualizer;
+    [SerializeField] UnityEngine.UI.Text topText;
+    [SerializeField] UnityEngine.UI.Text bottomText;
+
+    enum Mode { ADD, MINUS, DOT, PROJECT, PTL, PTP, CROSS, TRIPLE };
+
+    [SerializeField] Mode mode;
+    [SerializeField] int step;
+    public bool test = false;
 
     private List<GameObject> dashedLineInstances = new List<GameObject>();
-    public bool test = false;
+
     private string outputText;
     public FunctionData CurrentFunctionData { get; private set; }
 
@@ -59,65 +68,96 @@ public class ResultBehaviour : MonoBehaviour
     {
         Vector3 redVector = redArrow.transform.forward;
         Vector3 blueVector = blueArrow.transform.forward;
-        Vector3 greenVector = transform.forward;
-        int mode = CurrentFunctionData.mode;
-        string text = "";
+        Vector3 greenVector = greenArrow.transform.forward;
+
+        float magnitudes = Vector3.Magnitude(redVector) * Vector3.Magnitude(blueVector);
+        float dot = Vector3.Dot(redVector, blueVector);
+        float angle = (float) Math.Acos(dot / magnitudes);
+        Vector3 cross = Vector3.Cross(blueVector, redVector);
+
+        // Disable everything to select specific things to show
         DisableDashedLine();
+        foreach (var t in parallelograms)
+        {
+            t.SetActive(false);
+        }
+        point.SetActive(false);
+        greenArrow.SetActive(false);
+        normalArrow.SetActive(false);
+        arcVisualizer.SetActive(false);
+        ResetPosition();
+        normalArrow.transform.forward = Vector3.Cross(blueVector, redVector);
+        normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
+
         switch (mode)
         {
-            case 0: // Dot Product + Angle Calculation
-                float dot = Vector3.Dot(redVector, greenVector);
-                float magnitudes = Vector3.Magnitude(redVector) * Vector3.Magnitude(greenVector);
-                text = "Dot Product:\n" + Math.Round(dot, 2)
-                    + "\nAngle:\n" + Math.Round(Math.Acos(dot / magnitudes), 2);
-                point.SetActive(false);
-                normalArrow.SetActive(false);
-                arcVisualizer.SetActive(true);
+            case Mode.ADD:
+                blueArrow.transform.localPosition = redVector * 14;
+                greenVector = redVector + blueVector;
+                greenArrow.SetActive(true);
                 break;
-            case 1: // Cross Product + Parallelogram
-                for (int i = 1; i < parallelograms.Length; i++)
+
+            case Mode.MINUS:
+                greenArrow.transform.localPosition = blueVector * 14;
+                greenVector = redVector - blueVector;
+                greenArrow.SetActive(true);
+                break;
+
+            case Mode.DOT:
+
+                arcVisualizer.SetActive(true);
+
+                switch (step)
                 {
-                    parallelograms[i].SetActive(false);
+                    case 0:
+                        topText.text = "Angle: " + Math.Round(angle, 2);
+
+                        break;
+                    case 1:
+                        topText.text = "Result: " + Math.Round(dot, 2);
+                        bottomText.text = "Dot products are Scalars.";
+                        break;
                 }
 
-                parallelograms[0].SetActive(true);
-                greenVector = Vector3.Cross(blueVector, redVector);
-                text = "Area:\n" + Math.Round(Vector3.Magnitude(greenVector), 2);
-                point.SetActive(false);
-                arcVisualizer.SetActive(true);
                 break;
-            case 2: // Vector Addition
-                blueArrow.transform.localPosition = redArrow.transform.forward * 14;
-                greenVector = redVector + blueVector;
-                point.SetActive(false);
-                normalArrow.SetActive(false);
-                arcVisualizer.SetActive(true);
-                break;
-            case 3: // Vector Subtraction
-                transform.localPosition = blueArrow.transform.forward * 14;
-                greenVector = redVector - blueVector;
-                point.SetActive(false);
-                normalArrow.SetActive(false);
-                arcVisualizer.SetActive(true);
-                break;
-            case 4: // Projection
+
+            case Mode.PROJECT:
+
+                Vector3 redArrowEndPoint = redArrow.transform.position + redVector * 14;
+                Vector3 projectionEndPoint = redArrow.transform.position + greenVector * 14;
                 greenVector = Vector3.Project(redVector, blueVector);
-                // Calculate the endpoint position of redArrow
-                Vector3 redArrowEndPoint = redArrow.transform.position +
-                                           redArrow.transform.forward * 14;
-                // Calculate the endpoint positions of the projection vectors
-                Vector3 projectionEndPoint =
-                    redArrow.transform.position + greenVector * 14;
-                // Enable and update dotted lines
-                EnableDashedLine(redArrowEndPoint, projectionEndPoint);
+                normalArrow.transform.forward = greenVector;
+
                 arcVisualizer.SetActive(true);
+
+                switch (step)
+                {
+                    case 0:
+                        topText.text = "Angle: " + Math.Round(angle, 2);
+                        bottomText.text = "|Green|=|Blue|cos" + Math.Round(angle, 2);
+                        break;
+                    case 1:
+                        topText.text = "Dot: " + Math.Round(dot, 2);
+                        greenArrow.SetActive(true);
+                        EnableDashedLine(redArrowEndPoint, projectionEndPoint);
+                        bottomText.text = "|Green|=(Red.Blue)/|Red|";
+                        break;
+                    case 2:
+                        topText.text = "Red must be normalised.";
+                        greenArrow.SetActive(true);
+                        normalArrow.SetActive(true);
+                        bottomText.text = "Green=|Green|*Red.Normalise";
+                        break;
+                }
+
                 break;
-            case 5: // Point to line
+
+            case Mode.PTL:
                 // Getting the start and direction of a line
                 Vector3 lineOrigin = blueArrow.transform.position;
-                Vector3 lineDirection = blueArrow.transform.forward.normalized;
+                Vector3 lineDirection = blueVector.normalized;
                 // Calculate the endpoint position of redArrow
-                Vector3 redArrowPoint = redArrow.transform.position + redArrow.transform.forward * 14;
+                Vector3 redArrowPoint = redArrow.transform.position + redVector * 14;
                 // Set the position of point to the endpoint of redArrow.
                 point.transform.position = redArrowPoint;
                 // Get the position of point
@@ -131,7 +171,7 @@ public class ResultBehaviour : MonoBehaviour
                 // Calculate the shortest distance from a point to a line
                 float distance = Vector3.Distance(pointPosition, closestPointOnLine);
                 // Update display text to show distance information
-                text = "Distance: " + Math.Round(distance, 2);
+                topText.text = "Distance: " + Math.Round(distance, 2);
                 // Draws a dotted line from point to the nearest point on the line.
                 EnableDashedLine(pointPosition, closestPointOnLine);
 
@@ -139,7 +179,7 @@ public class ResultBehaviour : MonoBehaviour
                 float blueArrowLength = blueArrow.transform.localScale.z * 14;
                 // Calculate the start and end points of blueArrow
                 Vector3 blueArrowStart = blueArrow.transform.position;
-                Vector3 blueArrowEnd = blueArrowStart + blueArrow.transform.forward * blueArrowLength;
+                Vector3 blueArrowEnd = blueArrowStart + blueVector * blueArrowLength;
                 // Calculate the vector from the projected point to blueArrowStart.
                 Vector3 startToProjection = closestPointOnLine - blueArrowStart;
                 // Calculate the direction vector and length of blueArrow.
@@ -164,23 +204,15 @@ public class ResultBehaviour : MonoBehaviour
                 }
 
                 break;
-            case 6: // Parallelepiped
-                foreach (var t in parallelograms)
-                {
-                    t.SetActive(true);
-                }
 
-                float volume = Math.Abs(Vector3.Dot(Vector3.Cross(redVector, blueVector), greenVector));
-                text = "Volume:\n" + Math.Round(volume, 2);
-                break;
-            case 7: // Point to plane
+            case Mode.PTP:
                 parallelograms[0].SetActive(true);
                 for (int i = 1; i < parallelograms.Length; i++)
                 {
                     parallelograms[i].SetActive(false);
                 }
 
-                Vector3 greenVectorEndPoint = transform.position + transform.forward * 14;
+                Vector3 greenVectorEndPoint = greenArrow.transform.position + greenVector * 14;
                 point.transform.position = greenVectorEndPoint;
                 // Calculate the normal vector to the plane and a point on the plane.
                 Vector3 planeNormal = Vector3.Cross(redVector, blueVector).normalized;
@@ -190,13 +222,13 @@ public class ResultBehaviour : MonoBehaviour
                 // Calculate the closest point on the plane to the point
                 Vector3 closestPointOnPlane = point.transform.position - distanceToPlane * planeNormal;
                 // Update display text to show distance information
-                text = "Distance:\n" + Math.Round(Math.Abs(distanceToPlane), 2);
+                topText.text = "Distance:\n" + Math.Round(Math.Abs(distanceToPlane), 2);
                 // Draw the dotted line from the point to the nearest point on the plane
                 EnableDashedLine(point.transform.position, closestPointOnPlane);
 
                 // Planar basis vectors and lengths
-                Vector3 planeBasisVector1 = redArrow.transform.forward.normalized;
-                Vector3 planeBasisVector2 = blueArrow.transform.forward.normalized;
+                Vector3 planeBasisVector1 = redVector.normalized;
+                Vector3 planeBasisVector2 = blueVector.normalized;
                 float length1 = redArrow.transform.localScale.z * 14;
                 float length2 = blueArrow.transform.localScale.z * 14;
                 // Calculate the vector of the projected point with respect to the plane origin
@@ -222,25 +254,86 @@ public class ResultBehaviour : MonoBehaviour
                 normalArrow.SetActive(false);
                 point.SetActive(true);
                 break;
+
+            case Mode.CROSS:
+
+                greenVector = cross;
+
+                arcVisualizer.SetActive(true);
+
+                switch (step)
+                {
+                    case 0:
+                        topText.text = "Angle: " + Math.Round(angle, 2);
+
+                        break;
+                    case 1:
+                        normalArrow.SetActive(true);
+                        bottomText.text = "Cross products are Vectors.";
+                        break;
+                    case 2:
+                        normalArrow.SetActive(true);
+                        greenArrow.SetActive(true);
+                        break;
+                    case 3:
+                        normalArrow.SetActive(true);
+                        greenArrow.SetActive(true);
+                        parallelograms[0].SetActive(true);
+                        bottomText.text = "Area = |Red x Blue|";
+                        break;
+                }
+
+                break;
+
+            case Mode.TRIPLE:
+
+                greenArrow.SetActive(true);
+                arcVisualizer.SetActive(true);
+
+                switch (step)
+                {
+                    case 0:
+                        topText.text = "Angle: " + Math.Round(angle, 2);
+
+                        break;
+                    case 1:
+                        normalArrow.SetActive(true);
+                        break;
+                    case 2:
+                        normalArrow.SetActive(true);
+                        parallelograms[0].SetActive(true);
+                        break;
+                    case 3:
+                        float volume = Math.Abs(Vector3.Dot(cross, greenVector));
+                        topText.text = "Volume:\n" + Math.Round(volume, 2);
+
+                        normalArrow.SetActive(true);
+                        foreach (var t in parallelograms)
+                        {
+                            t.SetActive(true);
+                        }
+                        break;
+
+                }
+
+                break;
+
         }
 
-        outputText = text;
-        CurrentFunctionData.output = text;
-        Vector3 magnitude = transform.localScale;
+        Vector3 magnitude = greenArrow.transform.localScale;
         magnitude.z = Vector3.Magnitude(greenVector);
         if (test)
         {
-            testObject.text = "Difference: " +
-                              Math.Round(Vector3.Magnitude(transform.forward.normalized - greenVector.normalized), 2);
+            //testObject.text = "Difference: " +
+                              Math.Round(Vector3.Magnitude(greenArrow.transform.forward.normalized - greenVector.normalized), 2);
         }
         else
         {
-            transform.forward = greenVector;
-            transform.localScale = magnitude;
+            greenArrow.transform.forward = greenVector;
+            greenArrow.transform.localScale = magnitude;
         }
 
-        normalArrow.transform.forward = Vector3.Cross(blueVector, redVector);
-        normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
+
     }
 
     void Update()
@@ -248,7 +341,7 @@ public class ResultBehaviour : MonoBehaviour
         if (CurrentFunctionData == null)
         {
             // No data to process, exit early
-            return;
+            //return;
         }
 
         CalculateResult();
@@ -291,6 +384,6 @@ public class ResultBehaviour : MonoBehaviour
     {
         redArrow.transform.localPosition = Vector3.zero;
         blueArrow.transform.localPosition = Vector3.zero;
-        transform.localPosition = Vector3.zero;
+        greenArrow.transform.localPosition = Vector3.zero;
     }
 }

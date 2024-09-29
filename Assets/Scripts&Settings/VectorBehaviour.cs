@@ -62,6 +62,10 @@ public class VectorBehaviour : MonoBehaviour
         else
         {
             transform.Rotate(vector3);
+            if (vector3.z != 0)
+            {
+                transform.localPosition += transform.forward * 0.1f * vector3.z;
+            }
         }
     }
 }
