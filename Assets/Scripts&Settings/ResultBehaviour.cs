@@ -23,7 +23,7 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] GameObject blueArrow;
     [SerializeField] GameObject greenArrow;
 
-    [SerializeField] bool activeAR = false;
+    [SerializeField] bool activeAR  = false;
     [SerializeField] GameObject redArrowActual;
     [SerializeField] GameObject blueArrowActual;
     [SerializeField] GameObject greenArrowActual;
@@ -46,9 +46,11 @@ public class ResultBehaviour : MonoBehaviour
 
     private void Start() {
         if (activeAR) {
+            // redArrow.
             redArrow = redArrowActual;
             blueArrow = blueArrowActual;
             greenArrow = greenArrowActual;
+
         }
     }
 
@@ -122,7 +124,7 @@ public class ResultBehaviour : MonoBehaviour
                 break;
 
             case Mode.DOT:
-                VisualizeAngle(redVector, blueVector, redArrow.transform.position);
+                VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
                 switch (step)
                 {
                     case 0:
@@ -141,7 +143,7 @@ public class ResultBehaviour : MonoBehaviour
                 Vector3 redArrowEndPoint = redArrow.transform.position + redVector * 14;
                 Vector3 projectionEndPoint = redArrow.transform.position + greenVector * 14;
                 normalArrow.transform.forward = greenVector;
-                VisualizeAngle(redVector, blueVector, redArrow.transform.position);
+                VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
                 switch (step)
                 {
                     case 0:
@@ -266,7 +268,7 @@ public class ResultBehaviour : MonoBehaviour
                 greenArrow.transform.localScale = new Vector3(1, 1, greenVector.magnitude * 14);
                 // Activate the parallelogram needed
                 parallelograms[0].SetActive(true);
-                VisualizeAngle(redVector, blueVector, redArrow.transform.position);
+                VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
                 switch (step)
                 {
                     case 0:
@@ -294,7 +296,7 @@ public class ResultBehaviour : MonoBehaviour
             case Mode.TRIPLE:
 
                 greenArrow.SetActive(true);
-                VisualizeAngle(redVector, blueVector, redArrow.transform.position);
+                VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
 
                 switch (step)
                 {
@@ -390,23 +392,31 @@ public class ResultBehaviour : MonoBehaviour
         greenArrow.transform.localPosition = Vector3.zero;
     }
 
-    private void VisualizeAngle(Vector3 vector1, Vector3 vector2, Vector3 startPosition)
-    {
-        if (arcVisualizerPrefab)
-        {
-            if (_arcInstance)
-            {
-                Destroy(_arcInstance);
-            }
-
-            _arcInstance = Instantiate(arcVisualizerPrefab, startPosition, Quaternion.identity);
-            DynamicArcVisualizer arcVisualizer = _arcInstance.GetComponent<DynamicArcVisualizer>();
-            if (arcVisualizer)
-            {
-                arcVisualizer.SetRadius(2.0f);
-                float angle = Vector3.Angle(vector1, vector2);
-                arcVisualizer.UpdateArc(vector1, vector2, startPosition, angle);
-            }
-        }
+    private void VisualizeAngle(GameObject objectA, GameObject objectB, Vector3 startPosition) {
+        // if (arcVisualizerPrefab) {
+        //     if (_arcInstance) {
+        //         Destroy(_arcInstance);
+        //     }
+        //
+        //     Vector3 positionA = objectA.transform.position;
+        //     Vector3 positionB = objectB.transform.position;
+        //     Vector3 midpoint = (positionA + positionB) / 2;
+        //
+        //     _arcInstance = Instantiate(arcVisualizerPrefab, midpoint, Quaternion.identity);
+        //     DynamicArcVisualizer arcVisualizer = _arcInstance.GetComponent<DynamicArcVisualizer>();
+        //
+        //     if (arcVisualizer) {
+        //         float distance = Vector3.Distance(positionA, positionB);
+        //         arcVisualizer.SetRadius(distance / 2.0f);
+        //
+        //         Vector3 vector1 = (positionA - midpoint).normalized;
+        //         Vector3 vector2 = (positionB - midpoint).normalized;
+        //
+        //         float angle = Vector3.Angle(vector1, vector2);
+        //
+        //         arcVisualizer.UpdateArc(positionA, positionB, midpoint, angle);
+        //     }
+        // }
     }
+
 }
