@@ -22,6 +22,12 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] GameObject redArrow;
     [SerializeField] GameObject blueArrow;
     [SerializeField] GameObject greenArrow;
+
+    [SerializeField] bool activeAR = false;
+    [SerializeField] GameObject redArrowActual;
+    [SerializeField] GameObject blueArrowActual;
+    [SerializeField] GameObject greenArrowActual;
+
     [SerializeField] GameObject normalArrow;
     [SerializeField] GameObject point;
     [SerializeField] GameObject[] parallelograms = new GameObject[6];
@@ -37,6 +43,14 @@ public class ResultBehaviour : MonoBehaviour
 
     private string outputText;
     public FunctionData CurrentFunctionData { get; private set; }
+
+    private void Start() {
+        if (activeAR) {
+            redArrow = redArrowActual;
+            blueArrow = blueArrowActual;
+            greenArrow = greenArrowActual;
+        }
+    }
 
     public void UpdateResult(FunctionData data)
     {
