@@ -3,9 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class DynamicPlaneGenerator : MonoBehaviour
 {
-    [SerializeField] private GameObject vector1Object; // The object of the first vector
-    [SerializeField] private GameObject vector2Object; // The object of the second vector
-    [SerializeField] private float fixedLength = 14.0f; // Fixed length and width
+    public GameObject vector1Object; // The object of the first vector
+    public GameObject vector2Object; // The object of the second vector
+    public float fixedLength = 14.0f; // Fixed length and width
 
     private MeshFilter meshFilter;
     private Mesh mesh;
@@ -19,6 +19,14 @@ public class DynamicPlaneGenerator : MonoBehaviour
 
     void Update()
     {
+        if (!vector1Object || !vector2Object)
+        {
+            // Clear the mesh and hide the plane
+            mesh.Clear();
+            GetComponent<MeshRenderer>().enabled = false;
+            return;
+        }
+
         // Get the start, direction, and end points of the vector
         Vector3 origin1 = vector1Object.transform.position;
         Vector3 direction1 = vector1Object.transform.forward;
@@ -67,6 +75,22 @@ public class DynamicPlaneGenerator : MonoBehaviour
             // If the vector is not connected, the plane is hidden
             mesh.Clear();
             GetComponent<MeshRenderer>().enabled = false;
+        }
+    }
+
+    void OnDisable()
+    {
+        // Clear the grid
+        if (mesh != null)
+        {
+            mesh.Clear();
+        }
+
+        // Disable MeshRenderer
+        MeshRenderer renderer = GetComponent<MeshRenderer>();
+        if (renderer != null)
+        {
+            renderer.enabled = false;
         }
     }
 

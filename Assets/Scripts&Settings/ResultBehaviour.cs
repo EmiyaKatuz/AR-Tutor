@@ -35,6 +35,17 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] private GameObject arcVisualizerPrefab;
     [SerializeField] private Button leftButton;
     [SerializeField] private Button rightButton;
+    [SerializeField] private PlaneManager planeManager;
+
+    [System.Serializable]
+    public struct VectorPair
+    {
+        public GameObject vector1Object;
+        public GameObject vector2Object;
+    }
+
+    [SerializeField] private List<VectorPair> vectorPairs = new List<VectorPair>();
+
     private GameObject _arcInstance;
     private List<GameObject> dashedLineInstances = new List<GameObject>();
     private Mode mode;
@@ -109,6 +120,12 @@ public class ResultBehaviour : MonoBehaviour
             t.SetActive(false);
         }
 
+        /*
+        if (planeManager != null)
+        {
+            planeManager.ClearPlanes();
+        }
+        */
         point.SetActive(false);
         greenArrow.SetActive(false);
         normalArrow.SetActive(false);
@@ -119,6 +136,7 @@ public class ResultBehaviour : MonoBehaviour
         switch (mode)
         {
             case Mode.ADD:
+                //planeManager.ClearPlanes();
                 blueArrow.transform.localPosition = redVector * 14;
                 greenVector = redVector + blueVector;
                 greenArrow.SetActive(true);
@@ -212,11 +230,6 @@ public class ResultBehaviour : MonoBehaviour
                 // Do not modify the orientation or position of the redArrow.
                 // Hide unnecessary elements
                 normalArrow.SetActive(false);
-                foreach (var t in parallelograms)
-                {
-                    t.SetActive(false);
-                }
-
                 break;
 
             case Mode.PTP:
@@ -226,6 +239,19 @@ public class ResultBehaviour : MonoBehaviour
                     parallelograms[i].SetActive(false);
                 }
 
+                /*
+                vectorPairs.Clear();
+                // Here you define the vector pair that needs to generate the plane
+                vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
+                // Create a plane
+                if (planeManager != null)
+                {
+                    foreach (var pair in vectorPairs)
+                    {
+                        planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
+                    }
+                }
+                */
                 point.SetActive(true);
                 // Calculate the normal vector to the plane and a point on the plane.
                 Vector3 planeNormal = Vector3.Cross(redVector, blueVector).normalized;
@@ -273,14 +299,11 @@ public class ResultBehaviour : MonoBehaviour
                 // Update greenArrow
                 greenArrow.transform.forward = greenVector.normalized;
                 greenArrow.transform.localScale = new Vector3(1, 1, greenVector.magnitude * 14);
-                // Activate the parallelogram needed
-                parallelograms[0].SetActive(true);
                 VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
                 switch (currentStep)
                 {
                     case 0:
                         topText.text = "Angle: " + Math.Round(angle, 2);
-
                         break;
                     case 1:
                         normalArrow.SetActive(true);
@@ -294,6 +317,19 @@ public class ResultBehaviour : MonoBehaviour
                         normalArrow.SetActive(true);
                         greenArrow.SetActive(true);
                         parallelograms[0].SetActive(true);
+                        /*
+                        vectorPairs.Clear();
+                        // Here you define the vector pair that needs to generate the plane
+                        vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
+                        // Create a plane
+                        if (planeManager != null)
+                        {
+                            foreach (var pair in vectorPairs)
+                            {
+                                planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
+                            }
+                        }
+                        */
                         bottomText.text = "Area = |Red x Blue|";
                         break;
                 }
@@ -317,6 +353,19 @@ public class ResultBehaviour : MonoBehaviour
                     case 2:
                         normalArrow.SetActive(true);
                         parallelograms[0].SetActive(true);
+                        /*
+                        vectorPairs.Clear();
+                        // Here you define the vector pair that needs to generate the plane
+                        vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
+                        // Create a plane
+                        if (planeManager != null)
+                        {
+                            foreach (var pair in vectorPairs)
+                            {
+                                planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
+                            }
+                        }
+                        */
                         break;
                     case 3:
                         float volume = Math.Abs(Vector3.Dot(cross, greenVector));
@@ -328,6 +377,21 @@ public class ResultBehaviour : MonoBehaviour
                             t.SetActive(true);
                         }
 
+                        /*
+                        vectorPairs.Clear();
+                        // Here you define the vector pair that needs to generate the plane
+                        vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
+                        vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = greenVector });
+                        vectorPairs.Add(new VectorPair { vector1Object = blueVector, vector2Object = greenVector });
+                        // Create a plane
+                        if (planeManager != null)
+                        {
+                            foreach (var pair in vectorPairs)
+                            {
+                                planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
+                            }
+                        }
+                        */
                         break;
                 }
 
