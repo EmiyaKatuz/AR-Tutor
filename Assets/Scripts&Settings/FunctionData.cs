@@ -8,4 +8,5 @@ public class FunctionData
     //public string info;
     public string output;
     public Mode mode;
+    public int step;
 }

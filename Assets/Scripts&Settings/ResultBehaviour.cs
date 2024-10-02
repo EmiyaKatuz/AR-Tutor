@@ -22,12 +22,10 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] GameObject redArrow;
     [SerializeField] GameObject blueArrow;
     [SerializeField] GameObject greenArrow;
-
-    [SerializeField] bool activeAR  = false;
+    [SerializeField] bool activeAR = false;
     [SerializeField] GameObject redArrowActual;
     [SerializeField] GameObject blueArrowActual;
     [SerializeField] GameObject greenArrowActual;
-
     [SerializeField] GameObject normalArrow;
     [SerializeField] GameObject point;
     [SerializeField] GameObject[] parallelograms = new GameObject[6];
@@ -35,22 +33,29 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] UnityEngine.UI.Text topText;
     [SerializeField] UnityEngine.UI.Text bottomText;
     [SerializeField] private GameObject arcVisualizerPrefab;
-    [SerializeField] Mode mode;
-    [SerializeField] int step;
-    public bool test = false;
+    [SerializeField] private Button leftButton;
+    [SerializeField] private Button rightButton;
     private GameObject _arcInstance;
     private List<GameObject> dashedLineInstances = new List<GameObject>();
-
+    private Mode mode;
     private string outputText;
+    private int currentStep;
     public FunctionData CurrentFunctionData { get; private set; }
+    public bool test = false;
 
-    private void Start() {
-        if (activeAR) {
+    private void Start()
+    {
+        if (leftButton != null)
+            leftButton.onClick.AddListener(OnLeftButtonClick);
+        if (rightButton != null)
+            rightButton.onClick.AddListener(OnRightButtonClick);
+        UpdateButtonsVisibility();
+        if (activeAR)
+        {
             // redArrow.
             redArrow = redArrowActual;
             blueArrow = blueArrowActual;
             greenArrow = greenArrowActual;
-
         }
     }
 
@@ -59,6 +64,8 @@ public class ResultBehaviour : MonoBehaviour
         CurrentFunctionData = data;
         // Update mode
         mode = CurrentFunctionData.mode;
+        currentStep = 0;
+        UpdateButtonsVisibility();
         // Reset positions and initializations
         ResetPosition();
         DisableDashedLine();
@@ -125,7 +132,7 @@ public class ResultBehaviour : MonoBehaviour
 
             case Mode.DOT:
                 VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                switch (step)
+                switch (currentStep)
                 {
                     case 0:
                         topText.text = "Angle: " + Math.Round(angle, 2);
@@ -144,7 +151,7 @@ public class ResultBehaviour : MonoBehaviour
                 Vector3 projectionEndPoint = redArrow.transform.position + greenVector * 14;
                 normalArrow.transform.forward = greenVector;
                 VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                switch (step)
+                switch (currentStep)
                 {
                     case 0:
                         topText.text = "Angle: " + Math.Round(angle, 2);
@@ -269,7 +276,7 @@ public class ResultBehaviour : MonoBehaviour
                 // Activate the parallelogram needed
                 parallelograms[0].SetActive(true);
                 VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                switch (step)
+                switch (currentStep)
                 {
                     case 0:
                         topText.text = "Angle: " + Math.Round(angle, 2);
@@ -298,7 +305,7 @@ public class ResultBehaviour : MonoBehaviour
                 greenArrow.SetActive(true);
                 VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
 
-                switch (step)
+                switch (currentStep)
                 {
                     case 0:
                         topText.text = "Angle: " + Math.Round(angle, 2);
@@ -392,7 +399,8 @@ public class ResultBehaviour : MonoBehaviour
         greenArrow.transform.localPosition = Vector3.zero;
     }
 
-    private void VisualizeAngle(GameObject objectA, GameObject objectB, Vector3 startPosition) {
+    private void VisualizeAngle(GameObject objectA, GameObject objectB, Vector3 startPosition)
+    {
         // if (arcVisualizerPrefab) {
         //     if (_arcInstance) {
         //         Destroy(_arcInstance);
@@ -419,4 +427,32 @@ public class ResultBehaviour : MonoBehaviour
         // }
     }
 
+    private void OnLeftButtonClick()
+    {
+        if (currentStep > 0)
+        {
+            currentStep--;
+            UpdateButtonsVisibility();
+            CalculateResult();
+        }
+    }
+
+    private void OnRightButtonClick()
+    {
+        if (currentStep < CurrentFunctionData.step)
+        {
+            currentStep++;
+            UpdateButtonsVisibility();
+            CalculateResult();
+        }
+    }
+
+    private void UpdateButtonsVisibility()
+    {
+        if (leftButton != null)
+            leftButton.gameObject.SetActive(currentStep > 0);
+
+        if (rightButton != null)
+            rightButton.gameObject.SetActive(currentStep < CurrentFunctionData.step);
+    }
 }
