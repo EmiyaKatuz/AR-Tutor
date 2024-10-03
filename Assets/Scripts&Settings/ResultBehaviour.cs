@@ -4,6 +4,8 @@ using TMPro;
 using System;
 using System.Collections.Generic;
 using static System.Net.Mime.MediaTypeNames;
+using System.CodeDom;
+using UnityEngine.UIElements;
 
 public enum Mode
 {
@@ -36,6 +38,7 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] private Button leftButton;
     [SerializeField] private Button rightButton;
     [SerializeField] private PlaneManager planeManager;
+    private int LENGTH = 14;
 
     [System.Serializable]
     public struct VectorPair
@@ -45,7 +48,6 @@ public class ResultBehaviour : MonoBehaviour
     }
 
     [SerializeField] private List<VectorPair> vectorPairs = new List<VectorPair>();
-
     private GameObject _arcInstance;
     private List<GameObject> dashedLineInstances = new List<GameObject>();
     private Mode mode;
@@ -129,117 +131,154 @@ public class ResultBehaviour : MonoBehaviour
         point.SetActive(false);
         greenArrow.SetActive(false);
         normalArrow.SetActive(false);
-        ResetPosition();
+        //ResetPosition(); PUTS ALL VECTORS AT THE ORIGIN
         normalArrow.transform.forward = Vector3.Cross(blueVector, redVector);
         normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
 
-        switch (mode)
+        if (currentStep == -1)
         {
-            case Mode.ADD:
-                //planeManager.ClearPlanes();
-                blueArrow.transform.localPosition = redVector * 14;
-                greenVector = redVector + blueVector;
-                greenArrow.SetActive(true);
-                break;
+            if (mode == Mode.ADD)
+            {
+                bottomText.text = "Please place two vectors with one base to one end.";
+            }
+            else
+            {
+                bottomText.text = "Please place the vectors with bases next to each other.";
+            }
+        }
+        else
+        {
+            switch (mode)
+            {
+                case Mode.ADD:
+                    //planeManager.ClearPlanes();
+                    blueArrow.transform.localPosition = redVector * LENGTH; // PUTS BLUE AT THE END OF RED
+                    greenVector = redVector + blueVector;
+                    greenArrow.SetActive(true);
+                    break;
 
-            case Mode.MINUS:
-                greenArrow.transform.localPosition = blueVector * 14;
-                greenVector = redVector - blueVector;
-                greenArrow.SetActive(true);
-                break;
+                case Mode.MINUS:
+                    greenArrow.transform.localPosition = blueVector * LENGTH;
+                    greenVector = redVector - blueVector;
+                    greenArrow.SetActive(true);
+                    break;
 
-            case Mode.DOT:
-                VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                switch (currentStep)
-                {
-                    case 0:
-                        topText.text = "Angle: " + Math.Round(angle, 2);
-                        break;
-                    case 1:
-                        topText.text = "Result: " + Math.Round(dot, 2);
-                        bottomText.text = "Dot products are Scalars.";
-                        break;
-                }
+                case Mode.DOT:
+                    VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
+                    switch (currentStep)
+                    {
+                        case 0:
+                            topText.text = "Angle: " + Math.Round(angle, 2);
+                            break;
+                        case 1:
+                            topText.text = "Result: " + Math.Round(dot, 2);
+                            bottomText.text = "Dot products are Scalars.";
+                            break;
+                        case 2:
+                            bottomText.text = "Move the vectors to make the smallest dot product. What angle creates this?";
+                            break;
+                        case 3:
+                            bottomText.text = "Move the vectors to make the largest dot product. What angle creates this?";
+                            break;
+                        case 4:
+                            bottomText.text = "What trig function acts like this? sin, cos or tan?";
+                            break;
+                        case 5:
+                            bottomText.text = "The whole formula, u.v=|u||v|cos0";
+                            break;
+                    }
+                    break;
 
-                break;
+                case Mode.PROJECT:
+                    greenVector = Vector3.Project(redVector, blueVector);
+                    Vector3 redArrowEndPoint = redArrow.transform.position + redVector * LENGTH;
+                    Vector3 projectionEndPoint = redArrow.transform.position + greenVector * LENGTH;
+                    normalArrow.transform.forward = greenVector;
+                    VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
+                    switch (currentStep)
+                    {
+                        case 0:
+                            topText.text = "Angle: " + Math.Round(angle, 2);
+                            bottomText.text = "|Green|=|Blue|cos" + Math.Round(angle, 2);
+                            break;
+                        case 1:
+                            topText.text = "Dot: " + Math.Round(dot, 2);
+                            greenArrow.SetActive(true);
+                            EnableDashedLine(redArrowEndPoint, projectionEndPoint);
+                            bottomText.text = "|Green|=(Red.Blue)/|Red|";
+                            break;
+                        case 2:
+                            topText.text = "Red must be normalised.";
+                            greenArrow.SetActive(true);
+                            normalArrow.SetActive(true);
+                            bottomText.text = "Green=|Green|*Red.Normalise";
+                            break;
+                        case 3:
+                            bottomText.text = "Move the vectors to make the shortest projection.";
+                            break;
+                        case 4:
+                            bottomText.text = "Move the vectors to make the longest projection.";
+                            break;
+                        case 5:
+                            bottomText.text = "The dot product calculates how \"aligned\" one vector is to another.";
+                            break;
+                    }
 
-            case Mode.PROJECT:
-                greenVector = Vector3.Project(redVector, blueVector);
-                Vector3 redArrowEndPoint = redArrow.transform.position + redVector * 14;
-                Vector3 projectionEndPoint = redArrow.transform.position + greenVector * 14;
-                normalArrow.transform.forward = greenVector;
-                VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                switch (currentStep)
-                {
-                    case 0:
-                        topText.text = "Angle: " + Math.Round(angle, 2);
-                        bottomText.text = "|Green|=|Blue|cos" + Math.Round(angle, 2);
-                        break;
-                    case 1:
-                        topText.text = "Dot: " + Math.Round(dot, 2);
-                        greenArrow.SetActive(true);
-                        EnableDashedLine(redArrowEndPoint, projectionEndPoint);
-                        bottomText.text = "|Green|=(Red.Blue)/|Red|";
-                        break;
-                    case 2:
-                        topText.text = "Red must be normalised.";
-                        greenArrow.SetActive(true);
-                        normalArrow.SetActive(true);
-                        bottomText.text = "Green=|Green|*Red.Normalise";
-                        break;
-                }
+                    break;
+                case Mode.PTL:
+                    point.SetActive(true);
+                    // Getting the start and direction of a line
+                    Vector3 lineOrigin = blueArrow.transform.position;
+                    Vector3 lineDirection = blueVector.normalized;
+                    // Calculate the endpoint position of redArrow
+                    Vector3 redArrowPoint = redArrow.transform.position + redVector * LENGTH;
+                    point.transform.position = redArrowPoint;
+                    // Get the position of point
+                    Vector3 originToPoint = point.transform.position - lineOrigin;
+                    Vector3 projection = Vector3.Project(originToPoint, lineDirection);
+                    Vector3 closestPointOnLine = lineOrigin + projection;
+                    // Calculate the shortest distance from a point to a line
+                    float distance = Vector3.Distance(point.transform.position, closestPointOnLine);
+                    // Update display text to show distance information
+                    topText.text = "Distance: " + Math.Round(distance, 2);
+                    EnableDashedLine(point.transform.position, closestPointOnLine);
+                    // Get the length of blueArrow
+                    float blueArrowLength = blueArrow.transform.localScale.z * LENGTH;
+                    // Calculate the start and end points of blueArrow
+                    Vector3 blueArrowStart = blueArrow.transform.position;
+                    Vector3 blueArrowEnd = blueArrowStart + blueVector * blueArrowLength;
+                    // Calculate the vector from the projected point to blueArrowStart.
+                    Vector3 startToProjection = closestPointOnLine - blueArrowStart;
+                    Vector3 blueArrowDirection = (blueArrowEnd - blueArrowStart).normalized;
+                    float blueArrowMagnitude = Vector3.Distance(blueArrowStart, blueArrowEnd);
+                    // Calculate the length of the projection point on the blueArrow.
+                    float projectionLength = Vector3.Dot(startToProjection, blueArrowDirection);
+                    // Determine if the projected point is within the model range of blueArrow
+                    bool isProjectionOnSegment = projectionLength >= 0 && projectionLength <= blueArrowMagnitude;
+                    if (!isProjectionOnSegment)
+                    {
+                        // Draw the dotted line from the projection point to blueArrowStart.
+                        EnableDashedLine(closestPointOnLine, blueArrowStart);
+                    }
 
-                break;
+                    // Do not modify the orientation or position of the redArrow.
+                    // Hide unnecessary elements
+                    normalArrow.SetActive(false);
+                    foreach (var t in parallelograms)
+                    {
+                        t.SetActive(false);
+                    }
 
-            case Mode.PTL:
-                point.SetActive(true);
-                // Getting the start and direction of a line
-                Vector3 lineOrigin = blueArrow.transform.position;
-                Vector3 lineDirection = blueVector.normalized;
-                // Calculate the endpoint position of redArrow
-                Vector3 redArrowPoint = redArrow.transform.position + redVector * 14;
-                point.transform.position = redArrowPoint;
-                // Get the position of point
-                Vector3 originToPoint = point.transform.position - lineOrigin;
-                Vector3 projection = Vector3.Project(originToPoint, lineDirection);
-                Vector3 closestPointOnLine = lineOrigin + projection;
-                // Calculate the shortest distance from a point to a line
-                float distance = Vector3.Distance(point.transform.position, closestPointOnLine);
-                // Update display text to show distance information
-                topText.text = "Distance: " + Math.Round(distance, 2);
-                EnableDashedLine(point.transform.position, closestPointOnLine);
-                // Get the length of blueArrow
-                float blueArrowLength = blueArrow.transform.localScale.z * 14;
-                // Calculate the start and end points of blueArrow
-                Vector3 blueArrowStart = blueArrow.transform.position;
-                Vector3 blueArrowEnd = blueArrowStart + blueVector * blueArrowLength;
-                // Calculate the vector from the projected point to blueArrowStart.
-                Vector3 startToProjection = closestPointOnLine - blueArrowStart;
-                Vector3 blueArrowDirection = (blueArrowEnd - blueArrowStart).normalized;
-                float blueArrowMagnitude = Vector3.Distance(blueArrowStart, blueArrowEnd);
-                // Calculate the length of the projection point on the blueArrow.
-                float projectionLength = Vector3.Dot(startToProjection, blueArrowDirection);
-                // Determine if the projected point is within the model range of blueArrow
-                bool isProjectionOnSegment = projectionLength >= 0 && projectionLength <= blueArrowMagnitude;
-                if (!isProjectionOnSegment)
-                {
-                    // Draw the dotted line from the projection point to blueArrowStart.
-                    EnableDashedLine(closestPointOnLine, blueArrowStart);
-                }
+                    break;
 
-                // Do not modify the orientation or position of the redArrow.
-                // Hide unnecessary elements
-                normalArrow.SetActive(false);
-                break;
 
-            case Mode.PTP:
-                parallelograms[0].SetActive(true);
-                for (int i = 1; i < parallelograms.Length; i++)
-                {
-                    parallelograms[i].SetActive(false);
-                }
-
-                /*
+                case Mode.PTP:
+                    parallelograms[0].SetActive(true);
+                    for (int i = 1; i < parallelograms.Length; i++)
+                    {
+                        parallelograms[i].SetActive(false);
+                    }
+                    /*
                 vectorPairs.Clear();
                 // Here you define the vector pair that needs to generate the plane
                 vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
@@ -252,150 +291,149 @@ public class ResultBehaviour : MonoBehaviour
                     }
                 }
                 */
-                point.SetActive(true);
-                // Calculate the normal vector to the plane and a point on the plane.
-                Vector3 planeNormal = Vector3.Cross(redVector, blueVector).normalized;
-                Vector3 planePoint = redArrow.transform.position;
-                Vector3 greenVectorEndPoint = greenArrow.transform.position + greenVector * 14;
-                point.transform.position = greenVectorEndPoint;
-                // Calculate the distance from the point to the plane
-                float distanceToPlane = Vector3.Dot(planeNormal, point.transform.position - planePoint);
-                // Update display text to show distance information
-                topText.text = "Distance: " + Math.Abs(distanceToPlane).ToString("F2");
-                // Draw the dotted line from the point to the nearest point on the plane
-                Vector3 closestPointOnPlane = point.transform.position - distanceToPlane * planeNormal;
-                EnableDashedLine(point.transform.position, closestPointOnPlane);
-                // Planar basis vectors and lengths
-                Vector3 planeBasisVector1 = redVector.normalized;
-                Vector3 planeBasisVector2 = blueVector.normalized;
-                float length1 = redArrow.transform.localScale.z * 14;
-                float length2 = blueArrow.transform.localScale.z * 14;
-                // Calculate the vector of the projected point with respect to the plane origin
-                Vector3 vectorToProjection = closestPointOnPlane - planePoint;
-                // Compute the square length of the basis vectors
-                float length1Sqr = length1 * length1;
-                float length2Sqr = length2 * length2;
-                // Calculation of coefficients
-                float coeff1 = Vector3.Dot(vectorToProjection, planeBasisVector1 * length1) / length1Sqr;
-                float coeff2 = Vector3.Dot(vectorToProjection, planeBasisVector2 * length2) / length2Sqr;
-                // Determine if the projected point is inside a parallelogram
-                bool isProjectionInsidePlane = coeff1 is >= 0 and <= 1 && coeff2 is >= 0 and <= 1;
-                // Calculate the center of the plane
-                Vector3 planeCenter = planePoint + (planeBasisVector1 * (length1 * 0.5f)) +
-                                      (planeBasisVector2 * (length2 * 0.5f));
-                // If the point of projection is out of the plane, draw an extension line from the point of projection to the center of the plane
-                if (!isProjectionInsidePlane)
-                {
-                    EnableDashedLine(closestPointOnPlane, planeCenter);
-                }
+                    point.SetActive(true);
 
-                // Hide unnecessary elements
-                normalArrow.SetActive(false);
-                point.SetActive(true);
-                break;
-
-            case Mode.CROSS:
-                greenVector = cross;
-                // Update greenArrow
-                greenArrow.transform.forward = greenVector.normalized;
-                greenArrow.transform.localScale = new Vector3(1, 1, greenVector.magnitude * 14);
-                VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                switch (currentStep)
-                {
-                    case 0:
-                        topText.text = "Angle: " + Math.Round(angle, 2);
-                        break;
-                    case 1:
-                        normalArrow.SetActive(true);
-                        bottomText.text = "Cross products are Vectors.";
-                        break;
-                    case 2:
-                        normalArrow.SetActive(true);
-                        greenArrow.SetActive(true);
-                        break;
-                    case 3:
-                        normalArrow.SetActive(true);
-                        greenArrow.SetActive(true);
-                        parallelograms[0].SetActive(true);
-                        /*
-                        vectorPairs.Clear();
-                        // Here you define the vector pair that needs to generate the plane
-                        vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
-                        // Create a plane
-                        if (planeManager != null)
-                        {
-                            foreach (var pair in vectorPairs)
+                    point.SetActive(true);
+                    // Calculate the normal vector to the plane and a point on the plane.
+                    Vector3 planeNormal = Vector3.Cross(redVector, blueVector).normalized;
+                    Vector3 planePoint = redArrow.transform.position;
+                    Vector3 greenVectorEndPoint = greenArrow.transform.position + greenVector * LENGTH;
+                    point.transform.position = greenVectorEndPoint;
+                    // Calculate the distance from the point to the plane
+                    float distanceToPlane = Vector3.Dot(planeNormal, point.transform.position - planePoint);
+                    // Update display text to show distance information
+                    topText.text = "Distance: " + Math.Abs(distanceToPlane).ToString("F2");
+                    // Draw the dotted line from the point to the nearest point on the plane
+                    Vector3 closestPointOnPlane = point.transform.position - distanceToPlane * planeNormal;
+                    EnableDashedLine(point.transform.position, closestPointOnPlane);
+                    // Planar basis vectors and lengths
+                    Vector3 planeBasisVector1 = redVector.normalized;
+                    Vector3 planeBasisVector2 = blueVector.normalized;
+                    float length1 = redArrow.transform.localScale.z * LENGTH;
+                    float length2 = blueArrow.transform.localScale.z * LENGTH;
+                    // Calculate the vector of the projected point with respect to the plane origin
+                    Vector3 vectorToProjection = closestPointOnPlane - planePoint;
+                    // Compute the square length of the basis vectors
+                    float length1Sqr = length1 * length1;
+                    float length2Sqr = length2 * length2;
+                    // Calculation of coefficients
+                    float coeff1 = Vector3.Dot(vectorToProjection, planeBasisVector1 * length1) / length1Sqr;
+                    float coeff2 = Vector3.Dot(vectorToProjection, planeBasisVector2 * length2) / length2Sqr;
+                    // Determine if the projected point is inside a parallelogram
+                    bool isProjectionInsidePlane = coeff1 is >= 0 and <= 1 && coeff2 is >= 0 and <= 1;
+                    // Calculate the center of the plane
+                    Vector3 planeCenter = planePoint + (planeBasisVector1 * (length1 * 0.5f)) +
+                                          (planeBasisVector2 * (length2 * 0.5f));
+                    // If the point of projection is out of the plane, draw an extension line from the point of projection to the center of the plane
+                    if (!isProjectionInsidePlane)
+                    {
+                        EnableDashedLine(closestPointOnPlane, planeCenter);
+                    }
+                    break;
+                case Mode.CROSS:
+                    greenVector = cross;
+                    // Update greenArrow
+                    greenArrow.transform.forward = greenVector.normalized;
+                    greenArrow.transform.localScale = new Vector3(1, 1, greenVector.magnitude * LENGTH);
+                    VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
+                    switch (currentStep)
+                    {
+                        case 0:
+                            topText.text = "Angle: " + Math.Round(angle, 2);
+                            break;
+                        case 1:
+                            normalArrow.SetActive(true);
+                            bottomText.text = "Cross products are Vectors.";
+                            break;
+                        case 2:
+                            normalArrow.SetActive(true);
+                            greenArrow.SetActive(true);
+                            break;
+                        case 3:
+                            normalArrow.SetActive(true);
+                            greenArrow.SetActive(true);
+                            parallelograms[0].SetActive(true);
+                            /*
+                            vectorPairs.Clear();
+                            // Here you define the vector pair that needs to generate the plane
+                            vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
+                            // Create a plane
+                            if (planeManager != null)
                             {
-                                planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
+                                foreach (var pair in vectorPairs)
+                                {
+                                    planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
+                                }
                             }
-                        }
-                        */
-                        bottomText.text = "Area = |Red x Blue|";
-                        break;
-                }
+                            */
+                            bottomText.text = "Area = |Red x Blue|";
+                            break;
 
-                break;
+                        case 4:
+                            bottomText.text = "Move the vectors to make the smallest cross product. What angle creates this?";
+                            break;
+                        case 5:
+                            bottomText.text = "Move the vectors to make the largest cross product. What angle creates this?";
+                            break;
+                        case 6:
+                            bottomText.text = "What trig function acts like this? sin, cos or tan?";
+                            break;
+                        case 7:
+                            bottomText.text = "Swap the vectors around. What happens to the cross product?";
+                            break;
+                        case 8:
+                            bottomText.text = "Cross product is a vector parallel to the normal.";
+                            break;
+                        case 9:
+                            bottomText.text = "Area of a parallelogram is the magnitude of the cross product.";
+                            break;
+                        case 10:
+                            bottomText.text = "The whole formula is axb=|a||b|sin0*n";
+                            break;
+                    }
+                    break;
 
-            case Mode.TRIPLE:
+                case Mode.TRIPLE:
 
-                greenArrow.SetActive(true);
-                VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
 
-                switch (currentStep)
-                {
-                    case 0:
-                        topText.text = "Angle: " + Math.Round(angle, 2);
+                    switch (currentStep)
+                    {
+                        case 0:
+                            topText.text = "Angle: " + Math.Round(angle, 2);
 
-                        break;
-                    case 1:
-                        normalArrow.SetActive(true);
-                        break;
-                    case 2:
-                        normalArrow.SetActive(true);
-                        parallelograms[0].SetActive(true);
-                        /*
-                        vectorPairs.Clear();
-                        // Here you define the vector pair that needs to generate the plane
-                        vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
-                        // Create a plane
-                        if (planeManager != null)
-                        {
-                            foreach (var pair in vectorPairs)
+                            break;
+                        case 1:
+                            normalArrow.SetActive(true);
+                            break;
+                        case 2:
+                            normalArrow.SetActive(true);
+                            parallelograms[0].SetActive(true);
+                            /*
+                            vectorPairs.Clear();
+                            // Here you define the vector pair that needs to generate the plane
+                            vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
+                            // Create a plane
+                            if (planeManager != null)
                             {
-                                planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
+                                foreach (var pair in vectorPairs)
+                                {
+                                    planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
+                                }
                             }
-                        }
-                        */
-                        break;
-                    case 3:
-                        float volume = Math.Abs(Vector3.Dot(cross, greenVector));
-                        topText.text = "Volume:\n" + Math.Round(volume, 2);
+                            */
+                            break;
+                        case 3:
+                            float volume = Math.Abs(Vector3.Dot(cross, greenVector));
+                            topText.text = "Volume:\n" + Math.Round(volume, 2);
+                            greenArrow.SetActive(true);
+                            VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
 
-                        normalArrow.SetActive(true);
-                        foreach (var t in parallelograms)
-                        {
-                            t.SetActive(true);
-                        }
 
-                        /*
-                        vectorPairs.Clear();
-                        // Here you define the vector pair that needs to generate the plane
-                        vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
-                        vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = greenVector });
-                        vectorPairs.Add(new VectorPair { vector1Object = blueVector, vector2Object = greenVector });
-                        // Create a plane
-                        if (planeManager != null)
-                        {
-                            foreach (var pair in vectorPairs)
-                            {
-                                planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
-                            }
-                        }
-                        */
-                        break;
-                }
+                            break;
+                    }
 
-                break;
+                    break;
+            }
         }
 
         Vector3 magnitude = greenArrow.transform.localScale;
