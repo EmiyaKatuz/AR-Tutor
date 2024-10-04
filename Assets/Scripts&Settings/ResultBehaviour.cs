@@ -35,8 +35,8 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] UnityEngine.UI.Text topText;
     [SerializeField] UnityEngine.UI.Text bottomText;
     [SerializeField] private GameObject arcVisualizerPrefab;
-    [SerializeField] private Button leftButton;
-    [SerializeField] private Button rightButton;
+    [SerializeField] private UnityEngine.UI.Button leftButton;
+    [SerializeField] private UnityEngine.UI.Button rightButton;
     [SerializeField] private PlaneManager planeManager;
     private int LENGTH = 14;
 
