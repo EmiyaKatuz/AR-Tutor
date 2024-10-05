@@ -353,11 +353,13 @@ public class ResultBehaviour : MonoBehaviour
                         case 2:
                             normalArrow.SetActive(true);
                             greenArrow.SetActive(true);
+                            bottomText.text = "Cross product is a vector parallel to the normal.";
                             break;
                         case 3:
                             normalArrow.SetActive(true);
                             greenArrow.SetActive(true);
                             parallelograms[0].SetActive(true);
+                            bottomText.text = "Area of a parallelogram is the magnitude of the cross product.";
                             /*
                             vectorPairs.Clear();
                             // Here you define the vector pair that needs to generate the plane
@@ -387,12 +389,6 @@ public class ResultBehaviour : MonoBehaviour
                             bottomText.text = "Swap the vectors around. What happens to the cross product?";
                             break;
                         case 8:
-                            bottomText.text = "Cross product is a vector parallel to the normal.";
-                            break;
-                        case 9:
-                            bottomText.text = "Area of a parallelogram is the magnitude of the cross product.";
-                            break;
-                        case 10:
                             bottomText.text = "RedxBlue=|Red||Blue|sin(Angle)*Normal";
                             break;
                     }
