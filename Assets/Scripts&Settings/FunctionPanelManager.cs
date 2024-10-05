@@ -39,7 +39,7 @@ public class FunctionPanelManager : MonoBehaviour
         //topInfoText.text = data.info;
 
         // Update the text in the bottom output field
-        bottomInfoText.text = data.output;
+        //bottomInfoText.text = data.output;
 
         // Hide menu background
         menuBackground.SetActive(false);
@@ -50,7 +50,7 @@ public class FunctionPanelManager : MonoBehaviour
 
     void Update()
     {
-        bottomInfoText.text = CurrentFunctionData.output;
+        //bottomInfoText.text = CurrentFunctionData.output;
         //topInfoText.text = CurrentFunctionData.info;
     }
 

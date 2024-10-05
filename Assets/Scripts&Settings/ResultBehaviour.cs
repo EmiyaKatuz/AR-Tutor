@@ -134,8 +134,7 @@ public class ResultBehaviour : MonoBehaviour
         greenArrow.SetActive(false);
         normalArrow.SetActive(false);
         //ResetPosition(); PUTS ALL VECTORS AT THE ORIGIN
-        
-        
+
 
         if (currentStep == -1)
         {
@@ -146,7 +145,8 @@ public class ResultBehaviour : MonoBehaviour
             else if (mode == Mode.TRIPLE)
             {
                 bottomText.text = "Please place THREE vectors with bases next to each other.";
-            } else
+            }
+            else
             {
                 bottomText.text = "Please place TWO vectors with bases next to each other.";
             }
@@ -174,16 +174,19 @@ public class ResultBehaviour : MonoBehaviour
                     {
                         case 0:
                             topText.text = "Angle: " + Math.Round(angle, 2);
+                            bottomText.text = "";
                             break;
                         case 1:
                             topText.text = "Result: " + Math.Round(dot, 2);
                             bottomText.text = "Dot products are Scalars.";
                             break;
                         case 2:
-                            bottomText.text = "Move the vectors to make the smallest dot product. What angle creates this?";
+                            bottomText.text =
+                                "Move the vectors to make the smallest dot product. What angle creates this?";
                             break;
                         case 3:
-                            bottomText.text = "Move the vectors to make the largest dot product. What angle creates this?";
+                            bottomText.text =
+                                "Move the vectors to make the largest dot product. What angle creates this?";
                             break;
                         case 4:
                             bottomText.text = "What trig function acts like this? sin, cos or tan?";
@@ -192,6 +195,7 @@ public class ResultBehaviour : MonoBehaviour
                             bottomText.text = "Red.Blue=|Red||Blue|cos(Angle)";
                             break;
                     }
+
                     break;
 
                 case Mode.PROJECT:
@@ -283,19 +287,20 @@ public class ResultBehaviour : MonoBehaviour
                     {
                         parallelograms[i].SetActive(false);
                     }
+
                     /*
-                vectorPairs.Clear();
-                // Here you define the vector pair that needs to generate the plane
-                vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
-                // Create a plane
-                if (planeManager != null)
-                {
-                    foreach (var pair in vectorPairs)
+                    vectorPairs.Clear();
+                    // Here you define the vector pair that needs to generate the plane
+                    vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
+                    // Create a plane
+                    if (planeManager != null)
                     {
-                        planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
+                        foreach (var pair in vectorPairs)
+                        {
+                            planeManager.CreatePlane(pair.vector1Object, pair.vector2Object);
+                        }
                     }
-                }
-                */
+                    */
                     point.SetActive(true);
 
                     point.SetActive(true);
@@ -334,6 +339,7 @@ public class ResultBehaviour : MonoBehaviour
                     {
                         EnableDashedLine(closestPointOnPlane, planeCenter);
                     }
+
                     break;
                 case Mode.CROSS:
                     greenVector = cross;
@@ -345,6 +351,7 @@ public class ResultBehaviour : MonoBehaviour
                     {
                         case 0:
                             topText.text = "Angle: " + Math.Round(angle, 2);
+                            bottomText.text = "";
                             break;
                         case 1:
                             normalArrow.SetActive(true);
@@ -377,10 +384,12 @@ public class ResultBehaviour : MonoBehaviour
                             break;
 
                         case 4:
-                            bottomText.text = "Move the vectors to make the smallest cross product. What angle creates this?";
+                            bottomText.text =
+                                "Move the vectors to make the smallest cross product. What angle creates this?";
                             break;
                         case 5:
-                            bottomText.text = "Move the vectors to make the largest cross product. What shape is formed?";
+                            bottomText.text =
+                                "Move the vectors to make the largest cross product. What shape is formed?";
                             break;
                         case 6:
                             bottomText.text = "What trig function acts like this? sin, cos or tan?";
@@ -392,6 +401,7 @@ public class ResultBehaviour : MonoBehaviour
                             bottomText.text = "RedxBlue=|Red||Blue|sin(Angle)*Normal";
                             break;
                     }
+
                     break;
 
                 case Mode.TRIPLE:
@@ -402,12 +412,20 @@ public class ResultBehaviour : MonoBehaviour
                     {
                         case 0:
                             topText.text = "Angle: " + Math.Round(angle, 2);
+                            bottomText.text = "";
                             break;
                         case 1:
+                            topText.text = "";
+                            bottomText.text = "";
+                            break;
                         case 2: // same as case 1 except it's not normalised
+                            topText.text = "";
+                            bottomText.text = "";
                             normalArrow.SetActive(true);
                             break;
                         case 3:
+                            topText.text = "";
+                            bottomText.text = "";
                             normalArrow.SetActive(true);
                             parallelograms[0].SetActive(true);
                             /*
@@ -427,12 +445,14 @@ public class ResultBehaviour : MonoBehaviour
                         case 4:
                             float volume = Math.Abs(Vector3.Dot(cross, greenVector));
                             topText.text = "Volume:\n" + Math.Round(volume, 2);
+                            bottomText.text = "";
                             break;
                         case 5:
                             bottomText.text = "Move the vectors to make the smallest volume. What shape is formed?";
                             break;
                         case 6:
-                            bottomText.text = "Align the green vector with the magenta normal vector. What shape is formed?";
+                            bottomText.text =
+                                "Align the green vector with the magenta normal vector. What shape is formed?";
                             break;
                         case 7:
                             bottomText.text = "Volume of a paralellogram is a.(bxc)";
@@ -445,15 +465,17 @@ public class ResultBehaviour : MonoBehaviour
 
         normalArrow.transform.forward = cross;
         if (!(mode == Mode.TRIPLE && currentStep == 2)) // normalise normal arrow unless it is being the cross product
-        { normalArrow.transform.localScale = new Vector3(1, 1, 0.1f); }
+        {
+            normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
+        }
 
         Vector3 magnitude = greenArrow.transform.localScale;
         magnitude.z = Vector3.Magnitude(greenVector);
 
         if (mode == Mode.TRIPLE) //if the green arrow is bound to a tangible object, make it yellow.
         {
-            for (int i = 0; i < greenArrow.transform.childCount; i++) 
-            { 
+            for (int i = 0; i < greenArrow.transform.childCount; i++)
+            {
                 greenArrow.transform.GetChild(i).GetComponent<MeshRenderer>().material = yellowColor;
             }
         }
@@ -463,6 +485,7 @@ public class ResultBehaviour : MonoBehaviour
             {
                 greenArrow.transform.GetChild(i).GetComponent<MeshRenderer>().material = greenColor;
             }
+
             greenArrow.transform.forward = greenVector;
             greenArrow.transform.localScale = magnitude;
         }
@@ -472,8 +495,7 @@ public class ResultBehaviour : MonoBehaviour
     {
         if (CurrentFunctionData == null)
         {
-            // No data to process, exit early
-            //return;
+            return;
         }
 
         CalculateResult();
