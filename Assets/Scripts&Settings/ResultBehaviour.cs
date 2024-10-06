@@ -134,6 +134,7 @@ public class ResultBehaviour : MonoBehaviour {
         point.SetActive(false);
         greenArrow.SetActive(false);
         normalArrow.SetActive(false);
+        arcVisualizerPrefab.SetActive(false);
         ResetPosition(); // PUTS ALL VECTORS AT THE ORIGIN
 
 
@@ -351,7 +352,7 @@ public class ResultBehaviour : MonoBehaviour {
                     greenArrow.transform.localScale = new Vector3(1, 1, greenVector.magnitude * LENGTH);
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
                     normalArrow.transform.position = (redArrow.transform.position + blueArrow.transform.position) / 2f;
-                    topText.text = "Angle: " + Math.Round(angle, 2) + "°";
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "°\nCross magnitude:" + cross.magnitude;
                     switch (currentStep) { 
 
                         case 0:
@@ -370,7 +371,6 @@ public class ResultBehaviour : MonoBehaviour {
                             normalArrow.SetActive(true);
                             greenArrow.SetActive(true);
                             parallelograms[0].SetActive(true);
-                            bottomText.text = "Area of a parallelogram is the magnitude of the cross product.";
                             /*
                             vectorPairs.Clear();
                             // Here you define the vector pair that needs to generate the plane
@@ -416,17 +416,21 @@ public class ResultBehaviour : MonoBehaviour {
                 case Mode.TRIPLE:
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
                     greenArrow.SetActive(true);
-                    topText.text = "Angle: " + Math.Round(angle, 2) + "°";
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "°\nCross magnitude:" + cross.magnitude;
                     switch (currentStep)
                     {
                         case 0:
                             bottomText.text = "";
                             break;
                         case 1:
+                            bottomText.text = "The normal is orthogonal to the red and blue vectors.";
+                            break;
                         case 2: // same as case 1 except it's not normalised
+                            bottomText.text = "The purple arrow is now the cross product.";
                             normalArrow.SetActive(true);
                             break;
                         case 3:
+                            bottomText.text = "Area of a parallelogram is the magnitude of the cross product.";
                             normalArrow.SetActive(true);
                             parallelograms[0].SetActive(true);
                             /*
@@ -444,6 +448,7 @@ public class ResultBehaviour : MonoBehaviour {
                             */
                             break;
                         case 4:
+                            bottomText.text = "Volume = (Red x Blue).Yellow";
                             normalArrow.SetActive(true);
                             for (int i = 0; i < parallelograms.Length; i++) {
                                 parallelograms[i].SetActive(true);
@@ -489,7 +494,7 @@ public class ResultBehaviour : MonoBehaviour {
             normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
         } else
         {
-            normalArrow.transform.localScale = new Vector3(1, 1, cross.magnitude * LENGTH); //WHAT IS WRONG!!!
+            normalArrow.transform.localScale = new Vector3(1, 1, cross.magnitude);
         }
 
         Vector3 magnitude = greenArrow.transform.localScale;
