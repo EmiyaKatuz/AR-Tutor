@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VuforiaUnityInfo version="7.0">
     <TargetSet version="5.0" toolVersion="2.8.1">
+        <CylinderTarget name="gasDrink" version="3.0" targetId="38168ebf111544ea9299cf3e46e4171a" sideLength="7.748940" topDiameter="4.450000" bottomDiameter="4.450000" sideImage="gasDrink.Body_scaled.jpg"/>
         <CylinderTarget name="film" version="3.0" targetId="94a4e3237c444258a49c602ba4d54bc1" sideLength="10.000000" topDiameter="7.321340" bottomDiameter="7.321340" sideImage="film.Body_scaled.jpg"/>
     </TargetSet>
 </VuforiaUnityInfo>

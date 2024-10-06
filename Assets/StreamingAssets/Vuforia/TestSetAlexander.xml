@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig>
     <Tracking>
+        <CylinderTarget name="gasDrink" sideLength="7.748940"/>
         <CylinderTarget name="film" sideLength="10.000000"/>
-        <ImageTarget name="toothpaste.Back" size="3.300000 16.321524"/>
-        <ImageTarget name="toothpaste.Top" size="3.300000 3.011790"/>
+        <ImageTarget name="toothpaste2.Top" size="3.300000 16.321524"/>
+        <ImageTarget name="toothpaste2.Front" size="3.300000 3.011790"/>
         <ImageTarget name="toothpaste.Right" size="3.000000 16.340694"/>
-        <ImageTarget name="toothpaste.Bottom" size="3.300000 3.011790"/>
-        <ImageTarget name="toothpaste.Front" size="3.300000 16.325949"/>
+        <ImageTarget name="toothpaste.Top" size="3.300000 3.011790"/>
         <ImageTarget name="toothpaste.Left" size="3.000000 16.333334"/>
+        <ImageTarget name="toothpaste.Front" size="3.300000 16.325949"/>
+        <ImageTarget name="toothpaste.Bottom" size="3.300000 3.011790"/>
+        <ImageTarget name="toothpaste.Back" size="3.300000 16.321524"/>
+        <MultiTarget name="toothpaste2">
+            <Part name="toothpaste2.Front" translation="0 0 8.149999618530273" rotation="AD: 1 0 0 0"/>
+            <Part name="toothpaste2.Top" translation="0 1.5 0" rotation="AD: 1 0 0 -90"/>
+        </MultiTarget>
         <MultiTarget name="toothpaste">
             <Part name="toothpaste.Left" translation="-1.649999976158142 0 0" rotation="AD: 0 1 0 -90"/>
             <Part name="toothpaste.Right" translation="1.649999976158142 0 0" rotation="AD: 0 1 0 90"/>
