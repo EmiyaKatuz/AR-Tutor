@@ -15,6 +15,7 @@ public class ParallelogramBehaviour : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        transform.position = redArrow.transform.position;
         Mesh mesh = new Mesh();
         Vector3[] vertices = new Vector3[4] {
             Vector3.zero,

@@ -170,13 +170,13 @@ public class ResultBehaviour : MonoBehaviour {
 
                 case Mode.DOT:
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                    switch (currentStep) {
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "°\nDot: " + Math.Round(dot, 2);
+                    switch (currentStep)
+                    {
                         case 0:
-                            topText.text = "Angle: " + Math.Round(angle, 2) + "Â°";
                             bottomText.text = "";
                             break;
                         case 1:
-                            topText.text = "Result: " + Math.Round(dot, 2);
                             bottomText.text = "Dot products are Scalars.";
                             break;
                         case 2:
@@ -208,13 +208,13 @@ public class ResultBehaviour : MonoBehaviour {
                     // Debug.Log(redVector);
                     // Debug.Log(blueVector);
                     // Debug.Log(greenVector);
-                    switch (currentStep) {
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "°\nDot: " + Math.Round(dot, 2);
+                    switch (currentStep)
+                    {
                         case 0:
-                            topText.text = "Angle: " + Math.Round(angle, 2) + "\u00b0";
-                            bottomText.text = "|Green| = |Blue| cos(" + Math.Round(angle, 2) + "Â°)";
+                            bottomText.text = "|Green|=|Blue|cos(Angle)";
                             break;
                         case 1:
-                            topText.text = "Dot: " + Math.Round(dot, 2);
                             greenArrow.SetActive(true);
                             EnableDashedLine(redArrowEndPoint, projectionEndPoint);
                             bottomText.text = "|Green| = (Red Â· Blue) / |Red|";
@@ -353,9 +353,10 @@ public class ResultBehaviour : MonoBehaviour {
                     greenArrow.transform.localScale = new Vector3(1, 1, greenVector.magnitude * LENGTH);
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
                     normalArrow.transform.position = (redArrow.transform.position + blueArrow.transform.position) / 2f;
-                    switch (currentStep) {
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "°";
+                    switch (currentStep)
+                    {
                         case 0:
-                            topText.text = "Angle: " + Math.Round(angle, 2) + "Â°";
                             bottomText.text = "";
                             break;
                         case 1:
@@ -415,12 +416,13 @@ public class ResultBehaviour : MonoBehaviour {
                     break;
 
                 case Mode.TRIPLE:
-
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
                     greenArrow.SetActive(true);
-                    switch (currentStep) {
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "°";
+                    switch (currentStep)
+                    {
                         case 0:
-                            topText.text = "Angle: " + Math.Round(angle, 2) + "Â°";
+                            bottomText.text = "";
                             break;
                         case 1:
                         case 2: // same as case 1 except it's not normalised
@@ -474,8 +476,7 @@ public class ResultBehaviour : MonoBehaviour {
                             for (int i = 0; i < parallelograms.Length; i++) {
                                 parallelograms[i].SetActive(true);
                             }
-
-                            bottomText.text = "Volume of a paralellogram is a.(bxc)";
+                            bottomText.text = "Volume of a paralellepiped is a.(bxc)";
                             break;
                     }
 
@@ -484,9 +485,13 @@ public class ResultBehaviour : MonoBehaviour {
         }
 
         normalArrow.transform.forward = cross;
+        
         if (!(mode == Mode.TRIPLE && currentStep == 2)) // normalise normal arrow unless it is being the cross product
         {
             normalArrow.transform.localScale = new Vector3(1, 1, 0.1f);
+        } else
+        {
+            normalArrow.transform.localScale = new Vector3(1, 1, cross.magnitude * LENGTH); //WHAT IS WRONG!!!
         }
 
         Vector3 magnitude = greenArrow.transform.localScale;
@@ -545,9 +550,10 @@ public class ResultBehaviour : MonoBehaviour {
 
     void ResetPosition() {
         Vector3 vector = new Vector3(3, 12, 6);
-        // redArrow.transform.localPosition = vector;
-        // blueArrow.transform.localPosition = vector;
-        // greenArrow.transform.localPosition = vector;
+        redArrow.transform.localPosition = vector;
+        blueArrow.transform.localPosition = vector;
+        greenArrow.transform.localPosition = vector;
+        normalArrow.transform.localPosition = vector;
     }
 
     private void VisualizeAngle(GameObject objectA, GameObject objectB, Vector3 startPosition) {
