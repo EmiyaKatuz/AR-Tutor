@@ -352,7 +352,7 @@ public class ResultBehaviour : MonoBehaviour {
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
                     normalArrow.transform.position = (redArrow.transform.position + blueArrow.transform.position) / 2f;
                     topText.text = "Angle: " + Math.Round(angle, 2) + "°";
-                    switch (currentStep)
+                    switch (currentStep) { 
 
                         case 0:
                             bottomText.text = "";
