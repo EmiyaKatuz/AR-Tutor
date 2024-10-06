@@ -7,8 +7,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.CodeDom;
 using UnityEngine.UIElements;
 
-public enum Mode
-{
+public enum Mode {
     ADD,
     MINUS,
     DOT,
@@ -19,8 +18,8 @@ public enum Mode
     TRIPLE
 }
 
-public class ResultBehaviour : MonoBehaviour
-{
+[ExecuteInEditMode]
+public class ResultBehaviour : MonoBehaviour {
     [SerializeField] GameObject redArrow;
     [SerializeField] GameObject blueArrow;
     [SerializeField] GameObject greenArrow;
@@ -40,11 +39,14 @@ public class ResultBehaviour : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button leftButton;
     [SerializeField] private UnityEngine.UI.Button rightButton;
     [SerializeField] private PlaneManager planeManager;
+    private float redLength = 0.7f;
+    private float blueLength = 1.2f;
+    private int greenLength = 14;
     private int LENGTH = 14;
 
+
     [System.Serializable]
-    public struct VectorPair
-    {
+    public struct VectorPair {
         public GameObject vector1Object;
         public GameObject vector2Object;
     }
@@ -58,15 +60,13 @@ public class ResultBehaviour : MonoBehaviour
     public FunctionData CurrentFunctionData { get; private set; }
     public bool test = false;
 
-    private void Start()
-    {
+    private void Start() {
         if (leftButton != null)
             leftButton.onClick.AddListener(OnLeftButtonClick);
         if (rightButton != null)
             rightButton.onClick.AddListener(OnRightButtonClick);
         UpdateButtonsVisibility();
-        if (activeAR)
-        {
+        if (activeAR) {
             // redArrow.
             redArrow = redArrowActual;
             blueArrow = blueArrowActual;
@@ -74,8 +74,7 @@ public class ResultBehaviour : MonoBehaviour
         }
     }
 
-    public void UpdateResult(FunctionData data)
-    {
+    public void UpdateResult(FunctionData data) {
         CurrentFunctionData = data;
         // Update mode
         mode = CurrentFunctionData.mode;
@@ -86,17 +85,14 @@ public class ResultBehaviour : MonoBehaviour
         DisableDashedLine();
         // Disable or reset elements as needed
         if (CurrentFunctionData.mode != Mode.PTP && CurrentFunctionData.mode != Mode.CROSS &&
-            CurrentFunctionData.mode != Mode.TRIPLE)
-        {
-            foreach (var t in parallelograms)
-            {
+            CurrentFunctionData.mode != Mode.TRIPLE) {
+            foreach (var t in parallelograms) {
                 t.SetActive(false);
             }
         }
 
         // Destroy existing arcVisualizer instance
-        if (_arcInstance != null)
-        {
+        if (_arcInstance != null) {
             Destroy(_arcInstance);
             _arcInstance = null;
         }
@@ -106,8 +102,7 @@ public class ResultBehaviour : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void CalculateResult()
-    {
+    private void CalculateResult() {
         Vector3 redVector = redArrow.transform.forward;
         Vector3 blueVector = blueArrow.transform.forward;
         Vector3 greenVector = greenArrow.transform.forward;
@@ -122,8 +117,7 @@ public class ResultBehaviour : MonoBehaviour
 
         // Disable everything to select specific things to show
         DisableDashedLine();
-        foreach (var t in parallelograms)
-        {
+        foreach (var t in parallelograms) {
             t.SetActive(false);
         }
 
@@ -139,44 +133,41 @@ public class ResultBehaviour : MonoBehaviour
         ResetPosition(); // PUTS ALL VECTORS AT THE ORIGIN
 
 
-        if (currentStep == -1)
-        {
-            if (mode == Mode.ADD)
-            {
+        if (currentStep == -1) {
+            if (mode == Mode.ADD) {
                 bottomText.text = "Please place TWO vectors with one base to one end.";
             }
-            else if (mode == Mode.TRIPLE)
-            {
+            else if (mode == Mode.TRIPLE) {
                 bottomText.text = "Please place THREE vectors with bases next to each other.";
             }
-            else
-            {
+            else {
                 bottomText.text = "Please place TWO vectors with bases next to each other.";
             }
         }
-        else
-        {
-            switch (mode)
-            {
+
+        else {
+            switch (Mode.PROJECT) {
                 case Mode.ADD:
                     //planeManager.ClearPlanes();
-                    blueArrow.transform.localPosition = redArrow.transform.localPosition + redVector * LENGTH; // PUTS BLUE AT THE END OF RED
-                    greenVector = redVector + blueVector;
+                    greenVector = redVector * redLength + blueVector * blueLength;
+
+                    greenArrow.transform.localPosition = redArrow.transform.parent.localPosition;
+                    // greenArrow.transform.localScale = new Vector3(1,1,1);
                     greenArrow.SetActive(true);
                     break;
 
                 case Mode.MINUS:
-                    greenArrow.transform.localPosition = blueArrow.transform.localPosition + blueVector * LENGTH;
-                    greenVector = redVector - blueVector;
+                    greenArrow.transform.localPosition = blueArrow.transform.parent.localPosition + blueLength * blueVector *7f;
+                    // Debug.Log(blueLength * blueVector);
+                    greenVector = redVector * redLength - blueVector * blueLength;
                     greenArrow.SetActive(true);
                     break;
 
                 case Mode.DOT:
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                    switch (currentStep)
-                    {
+                    switch (currentStep) {
                         case 0:
-                            topText.text = "Angle: " + Math.Round(angle, 2) + "°";
+                            topText.text = "Angle: " + Math.Round(angle, 2) + "Â°";
                             bottomText.text = "";
                             break;
                         case 1:
@@ -198,26 +189,28 @@ public class ResultBehaviour : MonoBehaviour
                             bottomText.text = "Red.Blue=|Red||Blue|cos(Angle)";
                             break;
                     }
-
                     break;
 
                 case Mode.PROJECT:
                     greenVector = Vector3.Project(redVector, blueVector);
-                    Vector3 redArrowEndPoint = redArrow.transform.position + redVector * LENGTH;
-                    Vector3 projectionEndPoint = redArrow.transform.position + greenVector * LENGTH;
+                    Vector3 redArrowEndPoint = redArrow.transform.parent.position + redVector * redLength;
+                    Vector3 projectionEndPoint = redArrow.transform.parent.position + greenVector * LENGTH;
                     normalArrow.transform.forward = greenVector;
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                    switch (currentStep)
-                    {
+                    Debug.Log(redVector);
+                    Debug.Log(blueVector);
+                    Debug.Log(greenVector);
+
+                    switch (2) {
                         case 0:
-                            topText.text = "Angle: " + Math.Round(angle, 2) + "°";
-                            bottomText.text = "|Green|=|Blue|cos(" + Math.Round(angle, 2) + "°)";
+                            topText.text = "Angle: " + Math.Round(angle, 2) + "\u00b0";
+                            bottomText.text = "|Green|=|Blue|cos(" + Math.Round(angle, 2) + "Â°)";
                             break;
                         case 1:
                             topText.text = "Dot: " + Math.Round(dot, 2);
                             greenArrow.SetActive(true);
                             EnableDashedLine(redArrowEndPoint, projectionEndPoint);
-                            bottomText.text = "|Green|=(Red.Blue)/|Red|";
+                            bottomText.text = "|Green| = (Red Â· Blue) / |Red|";
                             break;
                         case 2:
                             topText.text = "Red must be normalised.";
@@ -241,7 +234,6 @@ public class ResultBehaviour : MonoBehaviour
                             bottomText.text = "The dot product calculates how \"aligned\" one vector is to another.";
                             break;
                     }
-
                     break;
                 case Mode.PTL:
                     point.SetActive(true);
@@ -273,8 +265,7 @@ public class ResultBehaviour : MonoBehaviour
                     float projectionLength = Vector3.Dot(startToProjection, blueArrowDirection);
                     // Determine if the projected point is within the model range of blueArrow
                     bool isProjectionOnSegment = projectionLength >= 0 && projectionLength <= blueArrowMagnitude;
-                    if (!isProjectionOnSegment)
-                    {
+                    if (!isProjectionOnSegment) {
                         // Draw the dotted line from the projection point to blueArrowStart.
                         EnableDashedLine(closestPointOnLine, blueArrowStart);
                     }
@@ -282,8 +273,7 @@ public class ResultBehaviour : MonoBehaviour
                     // Do not modify the orientation or position of the redArrow.
                     // Hide unnecessary elements
                     normalArrow.SetActive(false);
-                    foreach (var t in parallelograms)
-                    {
+                    foreach (var t in parallelograms) {
                         t.SetActive(false);
                     }
 
@@ -292,8 +282,7 @@ public class ResultBehaviour : MonoBehaviour
 
                 case Mode.PTP:
                     parallelograms[0].SetActive(true);
-                    for (int i = 1; i < parallelograms.Length; i++)
-                    {
+                    for (int i = 1; i < parallelograms.Length; i++) {
                         parallelograms[i].SetActive(false);
                     }
 
@@ -344,8 +333,7 @@ public class ResultBehaviour : MonoBehaviour
                     Vector3 planeCenter = planePoint + (planeBasisVector1 * (length1 * 0.5f)) +
                                           (planeBasisVector2 * (length2 * 0.5f));
                     // If the point of projection is out of the plane, draw an extension line from the point of projection to the center of the plane
-                    if (!isProjectionInsidePlane)
-                    {
+                    if (!isProjectionInsidePlane) {
                         EnableDashedLine(closestPointOnPlane, planeCenter);
                     }
 
@@ -356,10 +344,9 @@ public class ResultBehaviour : MonoBehaviour
                     greenArrow.transform.forward = greenVector.normalized;
                     greenArrow.transform.localScale = new Vector3(1, 1, greenVector.magnitude * LENGTH);
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                    switch (currentStep)
-                    {
+                    switch (currentStep) {
                         case 0:
-                            topText.text = "Angle: " + Math.Round(angle, 2) + "°";
+                            topText.text = "Angle: " + Math.Round(angle, 2) + "Â°";
                             bottomText.text = "";
                             break;
                         case 1:
@@ -422,10 +409,9 @@ public class ResultBehaviour : MonoBehaviour
 
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
                     greenArrow.SetActive(true);
-                    switch (currentStep)
-                    {
+                    switch (currentStep) {
                         case 0:
-                            topText.text = "Angle: " + Math.Round(angle, 2) + "°";
+                            topText.text = "Angle: " + Math.Round(angle, 2) + "Â°";
                             break;
                         case 1:
                         case 2: // same as case 1 except it's not normalised
@@ -450,36 +436,36 @@ public class ResultBehaviour : MonoBehaviour
                             break;
                         case 4:
                             normalArrow.SetActive(true);
-                            for (int i = 0; i < parallelograms.Length; i++)
-                            {
+                            for (int i = 0; i < parallelograms.Length; i++) {
                                 parallelograms[i].SetActive(true);
                             }
+
                             float volume = Math.Abs(Vector3.Dot(cross, greenVector));
                             topText.text = "Volume:\n" + Math.Round(volume, 2);
                             break;
                         case 5:
                             normalArrow.SetActive(true);
-                            for (int i = 0; i < parallelograms.Length; i++)
-                            {
+                            for (int i = 0; i < parallelograms.Length; i++) {
                                 parallelograms[i].SetActive(true);
                             }
+
                             bottomText.text = "Move the vectors to make the smallest volume. What shape is formed?";
                             break;
                         case 6:
                             normalArrow.SetActive(true);
-                            for (int i = 0; i < parallelograms.Length; i++)
-                            {
+                            for (int i = 0; i < parallelograms.Length; i++) {
                                 parallelograms[i].SetActive(true);
                             }
+
                             bottomText.text =
                                 "Align the green vector with the magenta normal vector. What shape is formed?";
                             break;
                         case 7:
                             normalArrow.SetActive(true);
-                            for (int i = 0; i < parallelograms.Length; i++)
-                            {
+                            for (int i = 0; i < parallelograms.Length; i++) {
                                 parallelograms[i].SetActive(true);
                             }
+
                             bottomText.text = "Volume of a paralellogram is a.(bxc)";
                             break;
                     }
@@ -499,15 +485,12 @@ public class ResultBehaviour : MonoBehaviour
 
         if (mode == Mode.TRIPLE) //if the green arrow is bound to a tangible object, make it yellow.
         {
-            for (int i = 0; i < greenArrow.transform.childCount; i++)
-            {
+            for (int i = 0; i < greenArrow.transform.childCount; i++) {
                 greenArrow.transform.GetChild(i).GetComponent<MeshRenderer>().material = yellowColor;
             }
         }
-        else
-        {
-            for (int i = 0; i < greenArrow.transform.childCount; i++)
-            {
+        else {
+            for (int i = 0; i < greenArrow.transform.childCount; i++) {
                 greenArrow.transform.GetChild(i).GetComponent<MeshRenderer>().material = greenColor;
             }
 
@@ -516,27 +499,22 @@ public class ResultBehaviour : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (CurrentFunctionData == null)
-        {
+    void Update() {
+        if (CurrentFunctionData == null) {
             return;
         }
 
         CalculateResult();
     }
 
-    public string GetOutput()
-    {
+    public string GetOutput() {
         return outputText;
     }
 
-    void EnableDashedLine(Vector3 startPoint, Vector3 endPoint)
-    {
+    void EnableDashedLine(Vector3 startPoint, Vector3 endPoint) {
         GameObject dashedLineInstance = Instantiate(dashedLinePrefab, Vector3.zero, Quaternion.identity);
         LineRenderer lr = dashedLineInstance.GetComponent<LineRenderer>();
-        if (lr)
-        {
+        if (lr) {
             lr.SetPosition(0, startPoint);
             lr.SetPosition(1, endPoint);
         }
@@ -546,12 +524,9 @@ public class ResultBehaviour : MonoBehaviour
     }
 
     // Added: Disable dashed lines
-    void DisableDashedLine()
-    {
-        foreach (GameObject dashedLineInstance in dashedLineInstances)
-        {
-            if (dashedLineInstance)
-            {
+    void DisableDashedLine() {
+        foreach (GameObject dashedLineInstance in dashedLineInstances) {
+            if (dashedLineInstance) {
                 Destroy(dashedLineInstance);
             }
         }
@@ -559,16 +534,14 @@ public class ResultBehaviour : MonoBehaviour
         dashedLineInstances.Clear();
     }
 
-    void ResetPosition()
-    {
+    void ResetPosition() {
         Vector3 vector = new Vector3(3, 12, 6);
-        redArrow.transform.localPosition = vector;
-        blueArrow.transform.localPosition = vector;
-        greenArrow.transform.localPosition = vector;
+        // redArrow.transform.localPosition = vector;
+        // blueArrow.transform.localPosition = vector;
+        // greenArrow.transform.localPosition = vector;
     }
 
-    private void VisualizeAngle(GameObject objectA, GameObject objectB, Vector3 startPosition)
-    {
+    private void VisualizeAngle(GameObject objectA, GameObject objectB, Vector3 startPosition) {
         // if (arcVisualizerPrefab) {
         //     if (_arcInstance) {
         //         Destroy(_arcInstance);
@@ -595,28 +568,24 @@ public class ResultBehaviour : MonoBehaviour
         // }
     }
 
-    private void OnLeftButtonClick()
-    {
-        if (currentStep > 0)
-        {
+    private void OnLeftButtonClick() {
+        if (currentStep > 0) {
             currentStep--;
             UpdateButtonsVisibility();
             CalculateResult();
         }
     }
 
-    private void OnRightButtonClick()
-    {
-        if (currentStep < CurrentFunctionData.step)
-        {
+    private void OnRightButtonClick() {
+
+        if (currentStep < CurrentFunctionData.step) {
             currentStep++;
             UpdateButtonsVisibility();
             CalculateResult();
         }
     }
 
-    private void UpdateButtonsVisibility()
-    {
+    private void UpdateButtonsVisibility() {
         if (leftButton != null)
             leftButton.gameObject.SetActive(currentStep > 0);
 
