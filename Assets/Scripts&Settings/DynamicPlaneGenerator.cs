@@ -97,7 +97,7 @@ public class DynamicPlaneGenerator : MonoBehaviour
     // Check whether the vector is connected
     bool AreVectorsConnected(Vector3 origin1, Vector3 end1, Vector3 origin2, Vector3 end2)
     {
-        float epsilon = 0.1f; // The permissible margin of error
+        float epsilon = 5.0f; // The permissible margin of error
         return (Vector3.Distance(origin1, origin2) < epsilon) ||
                (Vector3.Distance(origin1, end2) < epsilon) ||
                (Vector3.Distance(end1, origin2) < epsilon) ||
