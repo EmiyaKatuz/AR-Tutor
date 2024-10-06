@@ -39,6 +39,7 @@ public class ResultBehaviour : MonoBehaviour {
     [SerializeField] private UnityEngine.UI.Button leftButton;
     [SerializeField] private UnityEngine.UI.Button rightButton;
     [SerializeField] private PlaneManager planeManager;
+    [SerializeField] private Mode modeTest;
     private float redLength = 0.7f;
     private float blueLength = 1.2f;
     private int greenLength = 14;
@@ -107,6 +108,10 @@ public class ResultBehaviour : MonoBehaviour {
         Vector3 blueVector = blueArrow.transform.forward;
         Vector3 greenVector = greenArrow.transform.forward;
 
+        if (test & modeTest != null) {
+            mode = modeTest;
+        }
+
         float magnitudes = Vector3.Magnitude(redVector) * Vector3.Magnitude(blueVector);
         float dot = Vector3.Dot(redVector, blueVector);
         float angle = (float)(Math.Acos(dot / magnitudes) * 180 / Math.PI);
@@ -146,7 +151,7 @@ public class ResultBehaviour : MonoBehaviour {
         }
 
         else {
-            switch (Mode.PROJECT) {
+            switch (mode) {
                 case Mode.ADD:
                     //planeManager.ClearPlanes();
                     greenVector = redVector * redLength + blueVector * blueLength;
@@ -192,19 +197,21 @@ public class ResultBehaviour : MonoBehaviour {
                     break;
 
                 case Mode.PROJECT:
-                    greenVector = Vector3.Project(redVector, blueVector);
+                    Vector3 proj = Vector3.Project(redVector, blueVector);
+                    proj.z *= redLength;
+                    greenVector = proj;
+                    greenArrow.transform.localPosition = redArrow.transform.parent.localPosition;
                     Vector3 redArrowEndPoint = redArrow.transform.parent.position + redVector * redLength;
-                    Vector3 projectionEndPoint = redArrow.transform.parent.position + greenVector * LENGTH;
+                    Vector3 projectionEndPoint = redArrow.transform.parent.position + greenVector * redLength;
                     normalArrow.transform.forward = greenVector;
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                    Debug.Log(redVector);
-                    Debug.Log(blueVector);
-                    Debug.Log(greenVector);
-
-                    switch (2) {
+                    // Debug.Log(redVector);
+                    // Debug.Log(blueVector);
+                    // Debug.Log(greenVector);
+                    switch (currentStep) {
                         case 0:
                             topText.text = "Angle: " + Math.Round(angle, 2) + "\u00b0";
-                            bottomText.text = "|Green|=|Blue|cos(" + Math.Round(angle, 2) + "°)";
+                            bottomText.text = "|Green| = |Blue| cos(" + Math.Round(angle, 2) + "°)";
                             break;
                         case 1:
                             topText.text = "Dot: " + Math.Round(dot, 2);
@@ -216,7 +223,7 @@ public class ResultBehaviour : MonoBehaviour {
                             topText.text = "Red must be normalised.";
                             greenArrow.SetActive(true);
                             normalArrow.SetActive(true);
-                            bottomText.text = "Green=|Green|*Red.Normalise";
+                            bottomText.text = "Green = |Green| * Red.Normalise";
                             break;
                         case 3:
                             greenArrow.SetActive(true);
@@ -241,7 +248,7 @@ public class ResultBehaviour : MonoBehaviour {
                     Vector3 lineOrigin = blueArrow.transform.position;
                     Vector3 lineDirection = blueVector.normalized;
                     // Calculate the endpoint position of redArrow
-                    Vector3 redArrowPoint = redArrow.transform.position + redVector * LENGTH;
+                    Vector3 redArrowPoint = redArrow.transform.position + redVector * redLength;
                     point.transform.position = redArrowPoint;
                     // Get the position of point
                     Vector3 originToPoint = point.transform.position - lineOrigin;
@@ -253,10 +260,10 @@ public class ResultBehaviour : MonoBehaviour {
                     topText.text = "Distance: " + Math.Round(distance, 2);
                     EnableDashedLine(point.transform.position, closestPointOnLine);
                     // Get the length of blueArrow
-                    float blueArrowLength = blueArrow.transform.localScale.z * LENGTH;
+                    // float blueArrowLength = blueArrow.transform.localScale.z * blueLength;
                     // Calculate the start and end points of blueArrow
                     Vector3 blueArrowStart = blueArrow.transform.position;
-                    Vector3 blueArrowEnd = blueArrowStart + blueVector * blueArrowLength;
+                    Vector3 blueArrowEnd = blueArrowStart + blueVector * blueLength;
                     // Calculate the vector from the projected point to blueArrowStart.
                     Vector3 startToProjection = closestPointOnLine - blueArrowStart;
                     Vector3 blueArrowDirection = (blueArrowEnd - blueArrowStart).normalized;
@@ -317,8 +324,8 @@ public class ResultBehaviour : MonoBehaviour {
                     // Planar basis vectors and lengths
                     Vector3 planeBasisVector1 = redVector.normalized;
                     Vector3 planeBasisVector2 = blueVector.normalized;
-                    float length1 = redArrow.transform.localScale.z * LENGTH;
-                    float length2 = blueArrow.transform.localScale.z * LENGTH;
+                    float length1 = redArrow.transform.localScale.z * redLength;
+                    float length2 = blueArrow.transform.localScale.z * blueLength;
                     // Calculate the vector of the projected point with respect to the plane origin
                     Vector3 vectorToProjection = closestPointOnPlane - planePoint;
                     // Compute the square length of the basis vectors
@@ -342,8 +349,10 @@ public class ResultBehaviour : MonoBehaviour {
                     greenVector = cross;
                     // Update greenArrow
                     greenArrow.transform.forward = greenVector.normalized;
+                    greenArrow.transform.localPosition = (redArrow.transform.position + blueArrow.transform.position) / 2f;
                     greenArrow.transform.localScale = new Vector3(1, 1, greenVector.magnitude * LENGTH);
                     VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
+                    normalArrow.transform.position = (redArrow.transform.position + blueArrow.transform.position) / 2f;
                     switch (currentStep) {
                         case 0:
                             topText.text = "Angle: " + Math.Round(angle, 2) + "°";
@@ -361,7 +370,7 @@ public class ResultBehaviour : MonoBehaviour {
                         case 3:
                             normalArrow.SetActive(true);
                             greenArrow.SetActive(true);
-                            parallelograms[0].SetActive(true);
+                            // parallelograms[0].SetActive(true);
                             bottomText.text = "Area of a parallelogram is the magnitude of the cross product.";
                             /*
                             vectorPairs.Clear();
@@ -399,7 +408,7 @@ public class ResultBehaviour : MonoBehaviour {
                             break;
                         case 8:
                             greenArrow.SetActive(true);
-                            bottomText.text = "RedxBlue=|Red||Blue|sin(Angle)*Normal";
+                            bottomText.text = "RedxBlue = |Red| |Blue| sin(Angle) * Normal";
                             break;
                     }
 
@@ -586,10 +595,10 @@ public class ResultBehaviour : MonoBehaviour {
     }
 
     private void UpdateButtonsVisibility() {
-        if (leftButton != null)
-            leftButton.gameObject.SetActive(currentStep > 0);
-
-        if (rightButton != null)
-            rightButton.gameObject.SetActive(currentStep < CurrentFunctionData.step);
+        // if (leftButton != null)
+        //     leftButton.gameObject.SetActive(currentStep > 0);
+        //
+        // if (rightButton != null)
+        //     rightButton.gameObject.SetActive(currentStep < CurrentFunctionData.step);
     }
 }
