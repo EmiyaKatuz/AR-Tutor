@@ -66,7 +66,6 @@ public class ResultBehaviour : MonoBehaviour {
             leftButton.onClick.AddListener(OnLeftButtonClick);
         if (rightButton != null)
             rightButton.onClick.AddListener(OnRightButtonClick);
-        UpdateButtonsVisibility();
         if (activeAR) {
             // redArrow.
             redArrow = redArrowActual;
@@ -279,6 +278,7 @@ public class ResultBehaviour : MonoBehaviour {
 
                     // Do not modify the orientation or position of the redArrow.
                     // Hide unnecessary elements
+                    redArrow.SetActive(false);
                     normalArrow.SetActive(false);
                     foreach (var t in parallelograms) {
                         t.SetActive(false);
@@ -306,8 +306,6 @@ public class ResultBehaviour : MonoBehaviour {
                         }
                     }
                     */
-                    point.SetActive(true);
-
                     point.SetActive(true);
                     // Calculate the normal vector to the plane and a point on the plane.
                     Vector3 planeNormal = Vector3.Cross(redVector, blueVector).normalized;
@@ -355,7 +353,7 @@ public class ResultBehaviour : MonoBehaviour {
                     normalArrow.transform.position = (redArrow.transform.position + blueArrow.transform.position) / 2f;
                     topText.text = "Angle: " + Math.Round(angle, 2) + "°";
                     switch (currentStep)
-                    {
+
                         case 0:
                             bottomText.text = "";
                             break;
@@ -371,12 +369,12 @@ public class ResultBehaviour : MonoBehaviour {
                         case 3:
                             normalArrow.SetActive(true);
                             greenArrow.SetActive(true);
-                            // parallelograms[0].SetActive(true);
+                            parallelograms[0].SetActive(true);
                             bottomText.text = "Area of a parallelogram is the magnitude of the cross product.";
                             /*
                             vectorPairs.Clear();
                             // Here you define the vector pair that needs to generate the plane
-                            vectorPairs.Add(new VectorPair { vector1Object = redVector, vector2Object = blueVector });
+                            vectorPairs.Add(new VectorPair { vector1Object = redArrow, vector2Object = blueArrow });
                             // Create a plane
                             if (planeManager != null)
                             {
@@ -601,10 +599,9 @@ public class ResultBehaviour : MonoBehaviour {
     }
 
     private void UpdateButtonsVisibility() {
-        // if (leftButton != null)
-        //     leftButton.gameObject.SetActive(currentStep > 0);
-        //
-        // if (rightButton != null)
-        //     rightButton.gameObject.SetActive(currentStep < CurrentFunctionData.step);
+          if (leftButton)
+              leftButton.gameObject.SetActive(currentStep > 0);
+          if (rightButton)
+              rightButton.gameObject.SetActive(currentStep < CurrentFunctionData.step);
     }
 }
