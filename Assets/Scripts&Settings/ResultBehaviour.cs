@@ -135,6 +135,7 @@ public class ResultBehaviour : MonoBehaviour {
         */
         point.SetActive(false);
         greenArrow.SetActive(false);
+        redArrow.SetActive(true);
         normalArrow.SetActive(false);
         ResetPosition(); // PUTS ALL VECTORS AT THE ORIGIN
 
@@ -172,7 +173,7 @@ public class ResultBehaviour : MonoBehaviour {
 
                 case Mode.DOT:
                     VisualizeArc();
-                    topText.text = "Angle: " + Math.Round(angle, 2) + "�\nDot: " + Math.Round(dot, 2);
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "Degrees\nDot: " + Math.Round(dot, 2);
                     switch (currentStep)
                     {
                         case 0:
@@ -212,8 +213,8 @@ public class ResultBehaviour : MonoBehaviour {
                     // Debug.Log(redVector);
                     // Debug.Log(blueVector);
                     // Debug.Log(greenVector);
-                    topText.text = "Angle: " + Math.Round(angle, 2) + "\nDot: " + Math.Round(dot, 2);
-                    switch (1)
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "Degrees\nDot: " + Math.Round(dot, 2);
+                    switch(currentStep)
                     {
                         case 0:
                             bottomText.text = "|Green| = |Blue| cos(Angle)";
@@ -388,7 +389,7 @@ public class ResultBehaviour : MonoBehaviour {
                     greenArrow.transform.localScale = new Vector3(1, 1, greenVector.magnitude * LENGTH);
                     VisualizeArc();
                     normalArrow.transform.position = (redArrow.transform.position + blueArrow.transform.position) / 2f;
-                    topText.text = "Angle: " + Math.Round(angle, 2) + "�\nCross magnitude:" + cross.magnitude;
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "Degrees\nCross magnitude:" + cross.magnitude;
                     switch (currentStep) { 
 
                         case 0:
@@ -452,7 +453,7 @@ public class ResultBehaviour : MonoBehaviour {
                 case Mode.TRIPLE:
                     VisualizeArc();
                     greenArrow.SetActive(true);
-                    topText.text = "Angle: " + Math.Round(angle, 2) + "\nCross magnitude:" + cross.magnitude;
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "Degrees\nCross magnitude:" + cross.magnitude;
                     switch (currentStep)
                     {
                         case 0:
