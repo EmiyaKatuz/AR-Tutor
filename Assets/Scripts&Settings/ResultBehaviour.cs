@@ -277,6 +277,22 @@ public class ResultBehaviour : MonoBehaviour {
                         EnableDashedLine(closestPointOnLine, blueArrowStart);
                     }
 
+                    switch (currentStep)
+                    {
+                        case 0:
+                            bottomText.text = "Vector drawn from origin to point.";
+                            break;
+                        case 1:
+                            bottomText.text = "Vector projected along line.";
+                            break;
+                        case 2:
+                            bottomText.text = "One vector subtracted from the other.";
+                            break;
+                        case 3:
+                            bottomText.text = "Magnitude of vector taken.";
+                            break;
+                    }
+
                     // Do not modify the orientation or position of the redArrow.
                     // Hide unnecessary elements
                     redArrow.SetActive(false);
@@ -289,6 +305,22 @@ public class ResultBehaviour : MonoBehaviour {
 
 
                 case Mode.PTP:
+
+                    switch (currentStep)
+                    {
+                        case 0:
+                            bottomText.text = "Plane normal vector drawn";
+                            break;
+                        case 1:
+                            bottomText.text = "Vector drawn from plane point to other point";
+                            break;
+                        case 2:
+                            bottomText.text = "Dot of normal and this vector taken.";
+                            break;
+                        case 3:
+                            bottomText.text = "Absolute value of dot taken.";
+                            break;
+                    }
                     parallelograms[0].SetActive(true);
                     for (int i = 1; i < parallelograms.Length; i++) {
                         parallelograms[i].SetActive(false);
