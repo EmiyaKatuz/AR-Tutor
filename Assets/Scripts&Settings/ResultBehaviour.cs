@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
@@ -40,6 +40,7 @@ public class ResultBehaviour : MonoBehaviour {
     [SerializeField] private UnityEngine.UI.Button rightButton;
     [SerializeField] private PlaneManager planeManager;
     [SerializeField] private Mode modeTest;
+    [SerializeField] private GameObject arc;
     private float redLength = 0.7f;
     private float blueLength = 1.2f;
     private int greenLength = 14;
@@ -109,6 +110,7 @@ public class ResultBehaviour : MonoBehaviour {
 
         if (test & modeTest != null) {
             mode = modeTest;
+            // Debug.Log(mode);
         }
 
         float magnitudes = Vector3.Magnitude(redVector) * Vector3.Magnitude(blueVector);
@@ -134,9 +136,9 @@ public class ResultBehaviour : MonoBehaviour {
         point.SetActive(false);
         greenArrow.SetActive(false);
         normalArrow.SetActive(false);
-        arcVisualizerPrefab.SetActive(false);
         ResetPosition(); // PUTS ALL VECTORS AT THE ORIGIN
 
+        arc.SetActive(false);
 
         if (currentStep == -1) {
             if (mode == Mode.ADD) {
@@ -169,8 +171,8 @@ public class ResultBehaviour : MonoBehaviour {
                     break;
 
                 case Mode.DOT:
-                    VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
-                    topText.text = "Angle: " + Math.Round(angle, 2) + "°\nDot: " + Math.Round(dot, 2);
+                    VisualizeArc();
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "ï¿½\nDot: " + Math.Round(dot, 2);
                     switch (currentStep)
                     {
                         case 0:
@@ -200,19 +202,21 @@ public class ResultBehaviour : MonoBehaviour {
                     Vector3 proj = Vector3.Project(redVector, blueVector);
                     proj.z *= redLength;
                     greenVector = proj;
-                    greenArrow.transform.localPosition = redArrow.transform.parent.localPosition;
-                    Vector3 redArrowEndPoint = redArrow.transform.parent.position + redVector * redLength;
-                    Vector3 projectionEndPoint = redArrow.transform.parent.position + greenVector * redLength;
+                    greenArrow.transform.localPosition = blueArrow.transform.position;
+                    Vector3 redArrowEndPoint = redArrow.transform.parent.position + redVector * redLength * 13f;
+                    Vector3 projectionEndPoint = greenArrow.transform.localPosition + proj * redLength * 18f;
+                    //Debug.Log(redArrowEndPoint);
+                    //Vector3 projectionEndPoint = redArrow.transform.parent.position + greenVector * redLength;
                     normalArrow.transform.forward = greenVector;
-                    VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
+                    VisualizeArc();
                     // Debug.Log(redVector);
                     // Debug.Log(blueVector);
                     // Debug.Log(greenVector);
-                    topText.text = "Angle: " + Math.Round(angle, 2) + "°\nDot: " + Math.Round(dot, 2);
-                    switch (currentStep)
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "\nDot: " + Math.Round(dot, 2);
+                    switch (1)
                     {
                         case 0:
-                            bottomText.text = "|Green|=|Blue|cos(Angle)";
+                            bottomText.text = "|Green| = |Blue| cos(Angle)";
                             break;
                         case 1:
                             greenArrow.SetActive(true);
@@ -382,9 +386,9 @@ public class ResultBehaviour : MonoBehaviour {
                     greenArrow.transform.forward = greenVector.normalized;
                     greenArrow.transform.localPosition = (redArrow.transform.position + blueArrow.transform.position) / 2f;
                     greenArrow.transform.localScale = new Vector3(1, 1, greenVector.magnitude * LENGTH);
-                    VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
+                    VisualizeArc();
                     normalArrow.transform.position = (redArrow.transform.position + blueArrow.transform.position) / 2f;
-                    topText.text = "Angle: " + Math.Round(angle, 2) + "°\nCross magnitude:" + cross.magnitude;
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "ï¿½\nCross magnitude:" + cross.magnitude;
                     switch (currentStep) { 
 
                         case 0:
@@ -446,9 +450,9 @@ public class ResultBehaviour : MonoBehaviour {
                     break;
 
                 case Mode.TRIPLE:
-                    VisualizeAngle(redArrow, blueArrow, redArrow.transform.position);
+                    VisualizeArc();
                     greenArrow.SetActive(true);
-                    topText.text = "Angle: " + Math.Round(angle, 2) + "°\nCross magnitude:" + cross.magnitude;
+                    topText.text = "Angle: " + Math.Round(angle, 2) + "\nCross magnitude:" + cross.magnitude;
                     switch (currentStep)
                     {
                         case 0:
@@ -576,7 +580,7 @@ public class ResultBehaviour : MonoBehaviour {
     void DisableDashedLine() {
         foreach (GameObject dashedLineInstance in dashedLineInstances) {
             if (dashedLineInstance) {
-                Destroy(dashedLineInstance);
+                DestroyImmediate(dashedLineInstance);
             }
         }
 
@@ -584,38 +588,15 @@ public class ResultBehaviour : MonoBehaviour {
     }
 
     void ResetPosition() {
-        Vector3 vector = new Vector3(3, 12, 6);
-        redArrow.transform.localPosition = vector;
-        blueArrow.transform.localPosition = vector;
-        greenArrow.transform.localPosition = vector;
-        normalArrow.transform.localPosition = vector;
+        // Vector3 vector = new Vector3(3, 12, 6);
+        // redArrow.transform.localPosition = vector;
+        // blueArrow.transform.localPosition = vector;
+        // greenArrow.transform.localPosition = vector;
+        // normalArrow.transform.localPosition = vector;
     }
 
-    private void VisualizeAngle(GameObject objectA, GameObject objectB, Vector3 startPosition) {
-        // if (arcVisualizerPrefab) {
-        //     if (_arcInstance) {
-        //         Destroy(_arcInstance);
-        //     }
-        //
-        //     Vector3 positionA = objectA.transform.position;
-        //     Vector3 positionB = objectB.transform.position;
-        //     Vector3 midpoint = (positionA + positionB) / 2;
-        //
-        //     _arcInstance = Instantiate(arcVisualizerPrefab, midpoint, Quaternion.identity);
-        //     DynamicArcVisualizer arcVisualizer = _arcInstance.GetComponent<DynamicArcVisualizer>();
-        //
-        //     if (arcVisualizer) {
-        //         float distance = Vector3.Distance(positionA, positionB);
-        //         arcVisualizer.SetRadius(distance / 2.0f);
-        //
-        //         Vector3 vector1 = (positionA - midpoint).normalized;
-        //         Vector3 vector2 = (positionB - midpoint).normalized;
-        //
-        //         float angle = Vector3.Angle(vector1, vector2);
-        //
-        //         arcVisualizer.UpdateArc(positionA, positionB, midpoint, angle);
-        //     }
-        // }
+    private void VisualizeArc() {
+        arc.SetActive(true);
     }
 
     private void OnLeftButtonClick() {
