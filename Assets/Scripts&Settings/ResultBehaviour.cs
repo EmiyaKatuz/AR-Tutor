@@ -38,7 +38,8 @@ public class ResultBehaviour : MonoBehaviour {
     [SerializeField] private GameObject arcVisualizerPrefab;
     [SerializeField] private UnityEngine.UI.Button leftButton;
     [SerializeField] private UnityEngine.UI.Button rightButton;
-    [SerializeField] private PlaneManager planeManager;
+    public ParallelogramManager parallelogramManager;
+    //[SerializeField] private PlaneManager planeManager;
     [SerializeField] private Mode modeTest;
     [SerializeField] private GameObject arc;
     private float redLength = 0.7f;
@@ -469,6 +470,7 @@ public class ResultBehaviour : MonoBehaviour {
                         case 3:
                             bottomText.text = "Area of a parallelogram is the magnitude of the cross product.";
                             normalArrow.SetActive(true);
+                            parallelogramManager.GenerateParallelogram(redArrow.transform,blueArrow.transform);
                             parallelograms[0].SetActive(true);
                             /*
                             vectorPairs.Clear();
