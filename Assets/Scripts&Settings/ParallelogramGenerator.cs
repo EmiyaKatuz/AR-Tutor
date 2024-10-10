@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class ParallelogramGenerator : MonoBehaviour
 {
@@ -9,8 +8,9 @@ public class ParallelogramGenerator : MonoBehaviour
 
     public Material doubleSidedWhiteMaterial;
 
-    private bool _parallelogramIsEnabled = true;
+    private bool _parallelogramIsEnabled = false;
     private Mesh mesh;
+    private static int parallelogramCount = 0;
 
     void Start()
     {
@@ -26,6 +26,7 @@ public class ParallelogramGenerator : MonoBehaviour
             GetComponent<MeshRenderer>().material = doubleSidedWhiteMaterial;
         }
 
+        GetComponent<MeshRenderer>().enabled = _parallelogramIsEnabled;
         UpdateParallelogram();
     }
 
@@ -123,7 +124,9 @@ public class ParallelogramGenerator : MonoBehaviour
     public static GameObject CreateParallelogram(Transform object1, Transform object2, Material material,
         Transform parent = null)
     {
-        GameObject parallelogram = new GameObject("Parallelogram");
+        parallelogramCount++;
+        string name = $"Parallelogram_{parallelogramCount}";
+        GameObject parallelogram = new GameObject(name);
         parallelogram.transform.parent = parent;
 
         ParallelogramGenerator generator = parallelogram.AddComponent<ParallelogramGenerator>();
