@@ -38,7 +38,7 @@
 
 6. Vuforia App License Key is required.
 
-7. To build on a real iOS device, you will need a Apple developer account.
+7. To build on a real iOS device, you will need an Apple developer account.
 
 Once you get your data ready, download them from Vuforia Target Manager and import them to Unity. Select
 `CylinderTarget` and `MultiTarget`, replace them to your object data. Then the tangible objects are set.
