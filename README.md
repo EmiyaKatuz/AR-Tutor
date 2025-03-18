@@ -57,6 +57,6 @@ Replace `CylinderTarget` and `MultiTarget` with your object data. Then the tangi
 
    Once you get your environment ready, select Build and Run in Unity's Build Settings, and the XCode will take over all the remaining. Plug your Apple mobile devices into the Mac. Then the application will be automatically installed on your device. Open the APP; it should work properly.
 
-### Paper Outcome
+### Paper Outcome:
 
 Please see [Report_CS715](./Report_CS715.pdf)
